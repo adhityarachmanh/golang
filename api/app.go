@@ -67,7 +67,7 @@ func (app *AppSchema) initializeRoutes() {
 
 func (app *AppSchema) Run(addr string) {
 	srv := &http.Server{
-		Handler:      corsMiddleware(app.Router),
+		Handler:      app.Router,
 		Addr:         addr,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,

@@ -21,9 +21,9 @@ import (
 func RouteAPI(route string) string {
 	var URL string
 	if config.MODE == "DEV" {
-		URL = fmt.Sprintf("%s/%s/%s", config.Version, "api", route)
+		URL = fmt.Sprintf("/%s/%s/%s", config.Version, "api", route)
 	} else {
-		URL = ``
+		URL = fmt.Sprintf("/%s/%s/%s", config.Version, "api", route)
 	}
 	return URL
 }

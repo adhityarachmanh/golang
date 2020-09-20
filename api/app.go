@@ -58,19 +58,23 @@ func (app *AppSchema) initializeDatabase() {
 
 func (app *AppSchema) initializeRoutes() {
 	app.Router = gin.Default()
-	app.Router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, models.ResponseSchema{Status: 0, Message: "Hello Brow"})
-	})
+	app.Router.GET("/", app.index)
 	app.modSkill()
 	app.modCertificate()
 }
 
 func (app *AppSchema) Run(addr string) {
 	srv := &http.Server{
-		Handler:      app.Router,
+		Handler:      corsMiddleware(app.Router),
 		Addr:         addr,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
 	log.Fatal(srv.ListenAndServe())
+}
+
+func (app *AppSchema) index(c *gin.Context) {
+
+	c.JSON(http.StatusOK, models.ResponseSchema{Status: 0, Message: "Hello Brow"})
+
 }

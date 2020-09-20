@@ -58,7 +58,9 @@ func (app *AppSchema) initializeDatabase() {
 
 func (app *AppSchema) initializeRoutes() {
 	app.Router = gin.Default()
-	app.Router.GET("/", app.index)
+	app.Router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, models.ResponseSchema{Status: 0, Message: "Hello Brow"})
+	})
 	app.modSkill()
 	app.modCertificate()
 }
@@ -71,10 +73,4 @@ func (app *AppSchema) Run(addr string) {
 		ReadTimeout:  15 * time.Second,
 	}
 	log.Fatal(srv.ListenAndServe())
-}
-
-func (app *AppSchema) index(c *gin.Context) {
-
-	c.JSON(http.StatusOK, models.ResponseSchema{Status: 0, Message: "Hello Brow"})
-
 }

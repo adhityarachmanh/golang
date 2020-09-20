@@ -3,6 +3,7 @@
 package api
 
 import (
+	"arh/pkg/config"
 	"arh/pkg/models"
 	"arh/pkg/utils"
 	"context"
@@ -26,9 +27,12 @@ type AppSchema struct {
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		allowHeaders := "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"
-
+		var allowOrigin string = "http://localhost:4200"
+		if config.MODE == "PROD" {
+			allowOrigin = "https://cv-arh.web.app"
+		}
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
+		w.Header().Set("Access-Control-Allow-Origin", allowOrigin)
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")

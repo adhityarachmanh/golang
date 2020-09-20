@@ -1,0 +1,55 @@
+
+# SGNIN
+
+POST http://localhost:21500/api/auth/signin HTTP/1.1
+Content-Type: application/json
+# Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTk0OTk0NDksInVzZXJuYW1lIjoiYWRoaXR5YXJhY2htYW5oIn0.m7NHJVQ2MXax849bnQ2W5UtohpROpP0MDM_AATnTX3k
+
+{
+    "username":"user",
+    "password":"user",
+    "notiftoken":""
+}
+
+###
+# SIGNUP
+POST http://localhost:21500/api/auth/signup HTTP/1.1
+Content-Type: application/json
+
+ {
+    "address": "",
+    "email": "user@arh.dev",
+    "fullname": "user",
+    "password": "user",
+    "phone": "628123456789",
+    "user_role": 0,
+    "username": "user"
+  }
+###
+POSt http://localhost:21500/api/auth/token HTTP/1.1
+Content-Type: application/json
+XA: isferdUYlsIJ?cmYBJa6msMJUMm
+
+{
+  "notiftoken":""
+}
+
+###
+GET http://localhost:21500/v1.0/api/skill HTTP/1.1
+Content-Type: application/json
+
+###
+POST http://localhost:21500/api/add-skill HTTP/1.1
+Content-Type: application/json
+
+{
+  "kategori":"framework",
+  "link" :"https://flutter.dev",
+  "name":"flutter",
+  "image":"https://firebasestorage.googleapis.com/v0/b/adhityarachmanh-eb49c.appspot.com/o/skills%2F7v2xqYwFCrzylxnPKa63.png?alt=media&token=128535ba-55dc-4609-af8b-1134d93aca12"
+}
+###
+GET  https://arh-cv-api.herokuapp.com/api/certificate HTTP/1.1
+Content-Type: application/json
+
+###

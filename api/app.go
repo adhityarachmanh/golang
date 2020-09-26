@@ -49,6 +49,7 @@ func (app *AppSchema) Initialize() {
 }
 
 func (app *AppSchema) initializeDatabase() {
+	// initial database
 	var dbconn models.DatabaseSchema
 	utils.GetDecData("db", "", &dbconn)
 	clientOptions := options.Client().ApplyURI(dbconn.Uri)
@@ -61,6 +62,7 @@ func (app *AppSchema) initializeDatabase() {
 }
 
 func (app *AppSchema) initializeRoutes() {
+	// merge semua route
 	app.Router = gin.Default()
 	app.Router.GET("/", app.index)
 	app.modSkill()

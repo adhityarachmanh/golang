@@ -1,6 +1,7 @@
 package api
 
 import (
+	"arh/pkg/config"
 	"arh/pkg/models"
 	"arh/pkg/utils"
 
@@ -11,7 +12,9 @@ import (
 func (app *AppSchema) modSkill() {
 
 	app.Router.GET(utils.RouteAPI("skill"), app.getSkill)
-	app.Router.POST(utils.RouteAPI("add-skill"), app.addSkill)
+	if config.MODE == "DEV" {
+		app.Router.POST(utils.RouteAPI("add-skill"), app.addSkill)
+	}
 
 }
 func (app *AppSchema) getSkill(c *gin.Context) {

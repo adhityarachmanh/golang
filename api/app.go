@@ -61,8 +61,6 @@ func (app *AppSchema) initializeSocketIO() {
 
 func (app *AppSchema) Run(addr string) {
 
-	go app.SocketIO.Serve()
-	defer app.SocketIO.Close()
 	app.Router.GET("/socket.io/*any", gin.WrapH(app.SocketIO))
 	app.Router.POST("/socket.io/*any", gin.WrapH(app.SocketIO))
 	allowOrigin, allowMethods, allowedHeaders, Debug := config.GetCorsConfig()
@@ -79,6 +77,7 @@ func (app *AppSchema) Run(addr string) {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
+	go app.SocketIO.Serve()
 	log.Fatal(srv.ListenAndServe())
 }
 

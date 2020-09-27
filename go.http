@@ -56,3 +56,14 @@ POST  https://arh-cv-api.herokuapp.com/v1.0/api/certificate HTTP/1.1
 Content-Type: application/json
 
 ###
+POST  https://fcm.googleapis.com/fcm/send HTTP/1.1
+Authorization: key=AAAArXzEV5k:APA91bF_zqbLqyE-p_W-ZWRTFXdzlq9Dsq4uOWl9XoqOcDDCqLK2yrTSA6If3DzovLinWAjnHl2tieGdQXLEDXLezbhTSl4mb0dOWzLSw9FmttMtQMKxO5IRESggsFa78JyP3vQOnDQj
+Content-Type: application/json
+
+{
+  "notification": {
+    "title": "Hey there", 
+    "body": "Subscribe to mighty ghost hack youtube channel"
+  },
+  "to" : "eJXApTYeV5hUc9JgkHHP8M:APA91bFamkDwc1U6tZ497xTg455o8BTAm_rfvDUjU7zC-74ptwv5DgUq03VTmy_dtZM6qYHdZoHRzBI_IZFWzCNBQdcDjiKQVo3FRFUjsLHadO1EzrEI6JtEInZeME2RrNcJ2_MW5FRC"
+}

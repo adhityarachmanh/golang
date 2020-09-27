@@ -1,27 +1,34 @@
 package api
 
 import (
-	"fmt"
+	// "arh/pkg/utils"
+	"encoding/json"
+	// "fmt"
+	// "github.com/google/uuid"
 	socketio "github.com/googollee/go-socket.io"
 )
 
+type SocketIO struct {
+	ID   string      `json:"id"`
+	Data interface{} `json:"data"`
+}
+
 func (app *AppSchema) modSocket() {
-	app.SocketIO.OnConnect("/", func(s socketio.Conn) error {
-		s.SetContext("")
-		fmt.Println("connected:", s.ID())
-		return nil
+	var socket_map map[string]socketio.Conn = make(map[string]socketio.Conn)
+
+	app.SocketIO.OnEvent("/", "initialize", func(s socketio.Conn, msg string) {
+		socket_map[msg] = s
+	})
+	app.SocketIO.OnEvent("/", "send", func(s socketio.Conn, msg string) {
+		var data SocketIO
+		json.Unmarshal([]byte(msg), &data)
+		for _, value := range socket_map {
+			value.Emit("receiver", data.Data)
+		}
+
+	})
+	app.SocketIO.OnEvent("/", "dc", func(s socketio.Conn, msg string) {
+		delete(socket_map, msg)
 	})
 
-	app.SocketIO.OnEvent("/", "notice", func(s socketio.Conn, msg string) {
-		fmt.Println("notice:", msg)
-		s.Emit("reply", "have "+msg)
-	})
-
-	app.SocketIO.OnError("/", func(s socketio.Conn, e error) {
-		fmt.Println("meet error:", e)
-	})
-
-	app.SocketIO.OnDisconnect("/", func(s socketio.Conn, msg string) {
-		fmt.Println("closed", msg)
-	})
 }

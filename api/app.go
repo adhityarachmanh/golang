@@ -9,7 +9,7 @@ import (
 	"context"
 	// "fmt"
 	"github.com/gin-gonic/gin"
-	socketio "github.com/googollee/go-socket.io"
+	// socketio "github.com/googollee/go-socket.io"
 	"github.com/rs/cors"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -22,14 +22,14 @@ import (
 var ctx = context.TODO()
 
 type AppSchema struct {
-	Router   *gin.Engine
-	SocketIO *socketio.Server
-	DB       *mongo.Database
+	Router *gin.Engine
+	// SocketIO *socketio.Server
+	DB *mongo.Database
 }
 
 func (app *AppSchema) Initialize() {
 	app.initializeDatabase()
-	app.initializeSocketIO()
+	// app.initializeSocketIO()
 	app.initializeRoutes()
 }
 
@@ -54,15 +54,15 @@ func (app *AppSchema) initializeRoutes() {
 	app.modCertificate()
 }
 
-func (app *AppSchema) initializeSocketIO() {
-	app.SocketIO, _ = socketio.NewServer(nil)
-	app.modSocket()
-}
+// func (app *AppSchema) initializeSocketIO() {
+// 	app.SocketIO, _ = socketio.NewServer(nil)
+// 	app.modSocket()
+// }
 
 func (app *AppSchema) Run(addr string) {
 
-	app.Router.GET("/socket.io/*any", gin.WrapH(app.SocketIO))
-	app.Router.POST("/socket.io/*any", gin.WrapH(app.SocketIO))
+	// app.Router.GET("/socket.io/*any", gin.WrapH(app.SocketIO))
+	// app.Router.POST("/socket.io/*any", gin.WrapH(app.SocketIO))
 	allowOrigin, allowMethods, allowedHeaders, Debug := config.GetCorsConfig()
 	c := cors.New(cors.Options{
 		AllowedOrigins:   allowOrigin,
@@ -77,7 +77,7 @@ func (app *AppSchema) Run(addr string) {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	go app.SocketIO.Serve()
+	// go app.SocketIO.Serve()
 	log.Fatal(srv.ListenAndServe())
 }
 

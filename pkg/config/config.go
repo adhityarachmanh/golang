@@ -24,7 +24,7 @@ func GetEnvVal() (string, string, string) {
 
 func GetCorsConfig() ([]string, []string, []string, bool) {
 	if MODE == "PROD" {
-		allowOrigin = []string{"https://cv-arh.web.app", "http://127.0.0.1:5500", "http://localhost:4200"}
+		allowOrigin = []string{"https://cv-arh.web.app"}
 		allowMethods = []string{"POST", "GET"}
 		Debug = false
 	}

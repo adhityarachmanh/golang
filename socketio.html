@@ -78,7 +78,7 @@
         return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
       });
     }
-    var socket = io("ws://localhost:21500");
+    var socket = io("https://arh-cv-api.herokuapp.com");
     $('form').submit(async function (e) {
       e.preventDefault(); // prevents page reloading
       var uuid = await getUUID()

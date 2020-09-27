@@ -7,8 +7,9 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.9.0
 	github.com/gin-gonic/gin v1.6.3
-	github.com/googollee/go-socket.io v1.4.4 // indirect
+	github.com/googollee/go-socket.io v1.4.4
 	github.com/joho/godotenv v1.3.0
+	github.com/rs/cors v1.7.0
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.6.1
 	go.mongodb.org/mongo-driver v1.4.1

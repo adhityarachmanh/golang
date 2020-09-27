@@ -9,6 +9,8 @@ import (
 	"context"
 	// "fmt"
 	"github.com/gin-gonic/gin"
+	socketio "github.com/googollee/go-socket.io"
+	"github.com/rs/cors"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -20,32 +22,15 @@ import (
 var ctx = context.TODO()
 
 type AppSchema struct {
-	Router *gin.Engine
-	DB     *mongo.Database
-}
-
-func corsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		allowHeaders := "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"
-		var allowOrigin string = "http://localhost:4200"
-		if config.MODE == "PROD" {
-			allowOrigin = "https://cv-arh.web.app"
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", allowOrigin)
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Allow-Headers", allowHeaders)
-
-		next.ServeHTTP(w, r)
-	})
+	Router   *gin.Engine
+	SocketIO *socketio.Server
+	DB       *mongo.Database
 }
 
 func (app *AppSchema) Initialize() {
 	app.initializeDatabase()
+	app.initializeSocketIO()
 	app.initializeRoutes()
-
 }
 
 func (app *AppSchema) initializeDatabase() {
@@ -69,9 +54,27 @@ func (app *AppSchema) initializeRoutes() {
 	app.modCertificate()
 }
 
+func (app *AppSchema) initializeSocketIO() {
+	app.SocketIO, _ = socketio.NewServer(nil)
+	app.modSocket()
+}
+
 func (app *AppSchema) Run(addr string) {
+
+	go app.SocketIO.Serve()
+	defer app.SocketIO.Close()
+	app.Router.GET("/socket.io/*any", gin.WrapH(app.SocketIO))
+	app.Router.POST("/socket.io/*any", gin.WrapH(app.SocketIO))
+	allowOrigin, allowMethods, allowedHeaders, Debug := config.GetCorsConfig()
+	c := cors.New(cors.Options{
+		AllowedOrigins:   allowOrigin,
+		AllowedMethods:   allowMethods,
+		AllowedHeaders:   allowedHeaders,
+		AllowCredentials: true,
+		Debug:            Debug,
+	})
 	srv := &http.Server{
-		Handler:      corsMiddleware(app.Router),
+		Handler:      c.Handler(app.Router),
 		Addr:         addr,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,

@@ -22,13 +22,13 @@ import (
 // var Ed utils.BNESchema = utils.BNESchema{}
 var ctx = context.Background()
 
-// type BNESchema struct {
-// 	Genkey func(int) string
-// 	_k     string
-// 	_bL    int
-// 	Enc    func(string) string
-// 	Dec    func(string) string
-// }
+type BNESchema struct {
+	Genkey func(int) string
+	_k     string
+	_bL    int
+	Enc    func(string) string
+	Dec    func(string) string
+}
 type AppSchema struct {
 	Router   *gin.Engine
 	Firebase *firebase.App

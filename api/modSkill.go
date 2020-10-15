@@ -9,7 +9,7 @@ import (
 )
 
 func (app *AppSchema) modSkill() {
-	app.routeRegister("GET", "skill", app.addSkill)
+	app.routeRegister("GET", "skill", app.getSkill)
 	if config.MODE == "DEV" {
 		app.routeRegister("POST", "add-skill", app.addSkill)
 	}

@@ -55,15 +55,13 @@ func (app *AppSchema) initializeRoutes() {
 
 }
 
-// func (app *AppSchema) initializeSocketIO() {
-// 	app.SocketIO, _ = socketio.NewServer(nil)
-// 	app.modSocket()
-// }
+func (app *AppSchema) routeRegister(method string, url string, handler gin.HandlerFunc) {
+	// modified route
+	app.Router.Handle(method, utils.RouteAPI(url), handler)
+}
 
 func (app *AppSchema) Run(addr string) {
-
-	// app.Router.GET("/socket.io/*any", gin.WrapH(app.SocketIO))
-	// app.Router.POST("/socket.io/*any", gin.WrapH(app.SocketIO))
+	// Middleware
 	allowOrigin, allowMethods, allowedHeaders, Debug := config.GetCorsConfig()
 	c := cors.New(cors.Options{
 		AllowedOrigins:   allowOrigin,
@@ -78,7 +76,6 @@ func (app *AppSchema) Run(addr string) {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	// go app.SocketIO.Serve()
 	log.Fatal(srv.ListenAndServe())
 }
 

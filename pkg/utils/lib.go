@@ -54,6 +54,11 @@ func ResponseAPIError(c *gin.Context, message string) {
 	c.JSON(200, models.ResponseSchema{Message: message, Status: 1})
 }
 func ResponseAPI(c *gin.Context, response interface{}) {
+
+	if config.MODE == "PROD" {
+		JSONData, _ := json.Marshal(response)
+		response = Ed.BNE(6, 1).Enc(string(JSONData))
+	}
 	c.JSON(200, response)
 }
 

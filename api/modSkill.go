@@ -9,10 +9,9 @@ import (
 )
 
 func (app *AppSchema) modSkill() {
-
-	app.Router.GET(utils.RouteAPI("skill"), app.getSkill)
+	app.routeRegister("GET", "skill", app.addSkill)
 	if config.MODE == "DEV" {
-		app.Router.POST(utils.RouteAPI("add-skill"), app.addSkill)
+		app.routeRegister("POST", "add-skill", app.addSkill)
 	}
 
 }

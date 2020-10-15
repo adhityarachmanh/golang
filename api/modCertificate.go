@@ -3,15 +3,13 @@ package api
 import (
 	"arh/pkg/models"
 	"arh/pkg/utils"
-	"encoding/json"
+	// "encoding/json"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (app *AppSchema) modCertificate() {
-
-	app.Router.GET(utils.RouteAPI("certificate"), app.getCertificate)
-
+	app.routeRegister("GET", "certificate", app.getCertificate)
 }
 
 func (app *AppSchema) getCertificate(c *gin.Context) {
@@ -30,7 +28,6 @@ func (app *AppSchema) getCertificate(c *gin.Context) {
 		data = append(data, d)
 	}
 	defer client.Close()
-	JSONData, _ := json.Marshal(data)
 
-	utils.ResponseAPI(c, models.ResponseSchema{Data: utils.Ed.BNE(6, 1).Enc(string(JSONData))})
+	utils.ResponseAPI(c, models.ResponseSchema{Data: data})
 }

@@ -3,9 +3,9 @@ package api
 import (
 	"arh/pkg/models"
 	"arh/pkg/utils"
+	"encoding/json"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func (app *AppSchema) modCertificate() {
@@ -15,19 +15,22 @@ func (app *AppSchema) modCertificate() {
 }
 
 func (app *AppSchema) getCertificate(c *gin.Context) {
+	client, _ := app.Firebase.Firestore(ctx)
 
-	var q_result []models.CertificateSchema
-	cur, err := app.DB.Collection("certificates").Find(ctx, bson.D{})
-	if err != nil {
-		utils.ResponseAPIError(c, "Error")
-		return
-	}
-	defer cur.Close(ctx)
-	for cur.Next(ctx) {
-		var result models.CertificateSchema
-		cur.Decode(&result)
-		q_result = append(q_result, result)
-	}
-	utils.ResponseAPI(c, models.ResponseSchema{Data: q_result})
+	var data []models.CertificateSchema
+	result := client.Collection("certificates").Documents(ctx)
+	for {
+		var d models.CertificateSchema
+		doc, err := result.Next()
 
+		if err != nil {
+			break
+		}
+		doc.DataTo(&d)
+		data = append(data, d)
+	}
+	defer client.Close()
+	JSONData, _ := json.Marshal(data)
+
+	utils.ResponseAPI(c, models.ResponseSchema{Data: app.ED.BNE(6, 1).Enc(string(JSONData))})
 }

@@ -70,69 +70,6 @@ func EdGenkey(tx int) string {
 	return k + s
 }
 
-// type BNESchema struct {
-// 	_k  string
-// 	_bL int
-// 	Enc func(string) string
-// 	Dec func(string) string
-// }
-
-// func (self *BNESchema) BNE(bL int, k string) *BNESchema {
-// 	if k == "" {
-// 		self._k = EdGenkey(-1)
-// 	} else {
-// 		self._k = k
-// 	}
-// 	self._bL = bL
-// 	// untuk ENC
-
-// 	self.Enc = func(s string) string {
-// 		d := 0
-// 		l := 0
-// 		m := 8
-// 		b := rank(2, self._bL) - 1
-// 		r := ""
-// 		j := len(s)
-// 		i := 0
-// 		for i < j {
-// 			d = (d << m) + int(s[i])
-// 			i += 1
-// 			l += m
-// 			for l >= self._bL {
-// 				l -= self._bL
-// 				r += string(self._k[(d>>l)&b])
-// 				d &= rank(2, l) - 1
-// 			}
-// 		}
-// 		if l > 0 {
-// 			r += string(self._k[(d<<(self._bL-l))&b])
-// 		}
-// 		return r
-// 	}
-
-// 	self.Dec = func(s string) string {
-// 		d := 0
-// 		l := 0
-// 		m := 8
-// 		r := ""
-// 		j := len(s)
-// 		i := 0
-// 		for i < j {
-// 			d = ((d & 255) << self._bL) + strings.Index(self._k, string(s[i]))
-// 			i += 1
-// 			l += self._bL
-// 			if l >= m {
-// 				l -= m
-// 				r += string(rune((d >> l) & 255))
-// 			}
-// 		}
-// 		return r
-// 	}
-
-// 	//untuk dec
-// 	return self
-// }
-
 func makeRange(start, end, step int) []int {
 	if step <= 0 || end < start {
 		return []int{}
@@ -145,7 +82,7 @@ func makeRange(start, end, step int) []int {
 	return s
 }
 
-func rank(t int, p int) int {
+func Rank(t int, p int) int {
 	for i := 1; i < p; i++ {
 		t += t
 	}

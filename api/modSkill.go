@@ -6,7 +6,6 @@ import (
 	"arh/pkg/utils"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func (app *AppSchema) modSkill() {
@@ -18,29 +17,24 @@ func (app *AppSchema) modSkill() {
 
 }
 func (app *AppSchema) getSkill(c *gin.Context) {
-	var q_result []models.SkillSchema
-	cur, err := app.DB.Collection("skills").Find(ctx, bson.D{})
-	if err != nil {
-		utils.ResponseAPIError(c, "Error")
-		return
+	client, _ := app.Firebase.Firestore(ctx)
+
+	var data []models.SkillSchema
+	result := client.Collection("skill").Documents(ctx)
+	for {
+		var d models.SkillSchema
+		doc, err := result.Next()
+
+		if err != nil {
+			break
+		}
+		doc.DataTo(&d)
+		data = append(data, d)
 	}
-	defer cur.Close(ctx)
-	for cur.Next(ctx) {
-		var result models.SkillSchema
-		cur.Decode(&result)
-		q_result = append(q_result, result)
-	}
-	utils.ResponseAPI(c, models.ResponseSchema{Data: q_result})
+	defer client.Close()
+	utils.ResponseAPI(c, models.ResponseSchema{Data: data})
 }
 
 func (app *AppSchema) addSkill(c *gin.Context) {
-	// var q_result models.SkillSchema
-	var request models.BaseSkillSchema
-	c.BindJSON(&request)
-	_, err := app.DB.Collection("skills").InsertOne(ctx, request)
-	if err != nil {
-		utils.ResponseAPIError(c, "Error")
-		return
-	}
-	utils.ResponseAPI(c, models.ResponseSchema{Message: "Data berhasil di input."})
+
 }

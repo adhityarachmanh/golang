@@ -32,5 +32,5 @@ func (app *AppSchema) getCertificate(c *gin.Context) {
 	defer client.Close()
 	JSONData, _ := json.Marshal(data)
 
-	utils.ResponseAPI(c, models.ResponseSchema{Data: app.ED.BNE(6, 1).Enc(string(JSONData))})
+	utils.ResponseAPI(c, models.ResponseSchema{Data: JSONData})
 }

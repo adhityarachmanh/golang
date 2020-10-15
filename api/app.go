@@ -113,7 +113,7 @@ func (self *BNESchema) BNE(bL int, s int) *BNESchema {
 		j := len(s)
 		i := 0
 		for i < j {
-			d = (d << m) + int(s[i])
+			d = int(d<<m) + int(s[i])
 			i += 1
 			l += m
 			for l >= self._bL {
@@ -123,7 +123,7 @@ func (self *BNESchema) BNE(bL int, s int) *BNESchema {
 			}
 		}
 		if l > 0 {
-			r += string(self._k[(d<<(self._bL-l))&b])
+			r += string(self._k[int(d<<(self._bL-l))&b])
 		}
 		return r
 	}
@@ -136,7 +136,7 @@ func (self *BNESchema) BNE(bL int, s int) *BNESchema {
 		j := len(s)
 		i := 0
 		for i < j {
-			d = ((d & 255) << self._bL) + strings.Index(self._k, string(s[i]))
+			d = int((d&255)<<self._bL) + strings.Index(self._k, string(s[i]))
 			i += 1
 			l += self._bL
 			if l >= m {

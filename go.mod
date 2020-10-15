@@ -1,6 +1,6 @@
 module arh
 
-go 1.15
+go 1.23
 
 require (
 	cloud.google.com/go/firestore v1.3.0 // indirect
@@ -16,7 +16,7 @@ require (
 	github.com/rs/cors v1.7.0
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.6.1
-	go.mongodb.org/mongo-driver v1.4.1
+	go.mongodb.org/mongo-driver v1.4.1 // indirect
 	go.opencensus.io v0.22.5 // indirect
-	google.golang.org/api v0.32.0 // indirect
+	google.golang.org/api v0.32.0
 )

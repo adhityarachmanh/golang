@@ -50,8 +50,6 @@ github.com/go-playground/locales/currency
 github.com/go-playground/universal-translator
 # github.com/go-playground/validator/v10 v10.2.0
 github.com/go-playground/validator/v10
-# github.com/go-stack/stack v1.8.0
-github.com/go-stack/stack
 # github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e
 github.com/golang/groupcache/lru
 # github.com/golang/protobuf v1.4.2
@@ -118,13 +116,6 @@ github.com/stretchr/testify/mock
 github.com/ugorji/go/codec
 # go.mongodb.org/mongo-driver v1.4.1
 ## explicit
-go.mongodb.org/mongo-driver/bson
-go.mongodb.org/mongo-driver/bson/bsoncodec
-go.mongodb.org/mongo-driver/bson/bsonoptions
-go.mongodb.org/mongo-driver/bson/bsonrw
-go.mongodb.org/mongo-driver/bson/bsontype
-go.mongodb.org/mongo-driver/bson/primitive
-go.mongodb.org/mongo-driver/x/bsonx/bsoncore
 # go.opencensus.io v0.22.5
 ## explicit
 go.opencensus.io

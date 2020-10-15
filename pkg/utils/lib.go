@@ -4,6 +4,7 @@ package utils
 import (
 	"arh/pkg/config"
 	"arh/pkg/models"
+
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
@@ -23,7 +24,8 @@ func RouteAPI(route string) string {
 	if config.MODE == "DEV" {
 		URL = fmt.Sprintf("/%s/%s/%s", config.Version, "api", route)
 	} else {
-		URL = fmt.Sprintf("/%s/%s/%s", config.Version, "api", route)
+		URL = fmt.Sprintf("%s/%s/%s", config.Version, "api", route)
+		URL = fmt.Sprintf("/%s.arh", Ed.BNE(6, 1).Enc(URL))
 	}
 	return URL
 }

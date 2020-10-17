@@ -84,7 +84,7 @@ func (app *AppSchema) loggingMiddleWare(c *gin.Context, description string) {
 	logging.CreatedAt = time.Now().In(loc)
 	if config.MODE == "PROD" {
 		logging.URL = strings.ReplaceAll(c.Request.RequestURI, "/", "")
-		logging.URL = strings.ReplaceAll(c.Request.RequestURI, "."+config.CREATOR, "")
+		logging.URL = strings.ReplaceAll(c.Request.RequestURI, "."+strings.ToLower(config.CREATOR), "")
 		logging.URL = utils.Ed.BNE(6, 1).Dec(logging.URL)
 	}
 	if status == 0 {

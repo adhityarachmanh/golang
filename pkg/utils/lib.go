@@ -77,10 +77,10 @@ func randomChoice(charset string) string {
 	return string(b)
 }
 func ResponseAPIError(c *gin.Context, message string) {
-	c.JSON(200, models.ResponseSchema{Message: message, Status: 1, Data: "",Creator:config.CREATOR_NAME})
+	c.JSON(200, models.ResponseSchema{Message: message, Status: 1, Data: "", Creator: config.CREATOR_NAME})
 }
 func ResponseAPI(c *gin.Context, response models.ResponseSchema) {
-	response.Creator =Creator:config.CREATOR_NAME
+	response.Creator = config.CREATOR_NAME
 
 	if config.MODE == "PROD" {
 		JSONData, _ := json.Marshal(response.Data)

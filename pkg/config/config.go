@@ -7,7 +7,7 @@ import (
 )
 
 var Version string = "v1.0"
-var CREATOR_NAME = "Adhitya Rachman H"
+var CREATOR_NAME string = "Adhitya Rachman H"
 var CREATOR, PRODUCT_ID, PRODUCT = GetEnvVal()
 var MODE = os.Getenv("MODE")
 var allowOrigin []string = []string{"http://127.0.0.1:5500", "http://localhost:4200"}

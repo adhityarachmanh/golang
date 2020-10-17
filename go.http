@@ -35,24 +35,21 @@ XA: isferdUYlsIJ?cmYBJa6msMJUMm
 }
 
 ###
-GET http://localhost:21500/v1.0/api/certificate HTTP/1.1
+POST http://localhost:21500/v1.0/api/auth/login HTTP/1.1
 Content-Type: application/json
-
-###
-POST http://localhost:21500/v1.0/api/add-skill HTTP/1.1
-Content-Type: application/json
+Authorization: b8a820289e6848b6b8ee970fa45abbeb
 
 {
- "kategori": "styling",
-      "link": "https://sass-lang.com",
-      "name": "sass",
-      "image": "https://firebasestorage.googleapis.com/v0/b/adhityarachmanh-eb49c.appspot.com/o/skills%2FEj79f3gE5ZaBEVYY7FWt.png?alt=media&token=34d74e93-82c6-443b-8454-a1867a400ef8",
-      "color": "#fff",
-      "background": "#d56fa4",
-      "progress": 45
+  "asfas":"fasfas"
 }
+
 ###
-POST  https://arh-cv-api.herokuapp.com/v1.0/api/certificate HTTP/1.1
+GET http://localhost:21500/v1.0/api/certificate HTTP/1.1
+Content-Type: application/json
+Authorization: Arh b8a820289e6848b6b8ee970fa45abbeb
+
+###
+POST  https://arh-cv-api.herokuapp.com/djEuMC9hcGkvc2tpbGw.arh HTTP/1.1
 Content-Type: application/json
 
 ###

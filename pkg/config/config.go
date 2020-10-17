@@ -11,7 +11,23 @@ var CREATOR, PRODUCT_ID, PRODUCT = GetEnvVal()
 var MODE = os.Getenv("MODE")
 var allowOrigin []string = []string{"http://127.0.0.1:5500", "http://localhost:4200"}
 var allowMethods []string = []string{"POST", "OPTIONS", "GET", "PUT", "DELETE"}
-var allowheaders []string = []string{"Accept, Authorization, Content-Type, Content-Length, X-CSRF-Token, Token, session, Origin, Host, Connection, Accept-Encoding, Accept-Language, X-Requested-With"}
+var allowheaders []string = []string{"Content-Type", "Authorization", "XA"}
+
+// 	"X-Arh",
+// 	"Accept",
+// 	"Authorization",
+// 	"Content-Type",
+// 	"Content-Length",
+// 	"X-CSRF-Token",
+// 	"Token",
+// 	"session",
+// 	"Origin",
+// 	"Host",
+// 	"Connection",
+// 	"Accept-Encoding",
+// 	"Accept-Language",
+// 	"X-Requested-With",
+// }
 var Debug bool = true
 
 func GetEnvVal() (string, string, string) {

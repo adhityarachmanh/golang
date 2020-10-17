@@ -4,20 +4,46 @@ package utils
 import (
 	"arh/pkg/config"
 	"arh/pkg/models"
-
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/common-nighthawk/go-figure"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"math/rand"
+	"net"
 	"os"
 	"os/exec"
 	"sort"
 	"time"
 )
+
+type Tahan struct {
+	Coba    func()
+	Tangkap func(Pengecualian)
+	Selesai func()
+}
+type Pengecualian interface{}
+
+func Throw(up Pengecualian) {
+	panic(up)
+}
+
+func (cts Tahan) Gas() {
+	if cts.Selesai != nil {
+		defer cts.Selesai()
+	}
+	if cts.Tangkap != nil {
+		defer func() {
+			if r := recover(); r != nil {
+				cts.Tangkap(r)
+			}
+		}()
+	}
+	cts.Coba()
+}
 
 func RouteAPI(route string) string {
 	var URL string
@@ -51,13 +77,13 @@ func randomChoice(charset string) string {
 	return string(b)
 }
 func ResponseAPIError(c *gin.Context, message string) {
-	c.JSON(200, models.ResponseSchema{Message: message, Status: 1})
+	c.JSON(200, models.ResponseSchema{Message: message, Status: 1, Data: ""})
 }
-func ResponseAPI(c *gin.Context, response interface{}) {
+func ResponseAPI(c *gin.Context, response models.ResponseSchema) {
 
 	if config.MODE == "PROD" {
-		JSONData, _ := json.Marshal(response)
-		response = Ed.BNE(6, 1).Enc(string(JSONData))
+		JSONData, _ := json.Marshal(response.Data)
+		response.Data = Ed.BNE(6, 2).Enc(string(JSONData))
 	}
 	c.JSON(200, response)
 }
@@ -114,4 +140,55 @@ func PrintFigure(s string, font string) {
 
 	myFigure.Print()
 	fmt.Print("\n")
+}
+func GetMacAddr() ([]string, error) {
+	ifas, err := net.Interfaces()
+	if err != nil {
+		return nil, err
+	}
+	var as []string
+	for _, ifa := range ifas {
+		a := ifa.HardwareAddr.String()
+		if a != "" {
+			as = append(as, a)
+		}
+	}
+	return as, nil
+}
+
+func ExternalIP() (string, error) {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		return "", err
+	}
+	for _, iface := range ifaces {
+		if iface.Flags&net.FlagUp == 0 {
+			continue // interface down
+		}
+		if iface.Flags&net.FlagLoopback != 0 {
+			continue // loopback interface
+		}
+		addrs, err := iface.Addrs()
+		if err != nil {
+			return "", err
+		}
+		for _, addr := range addrs {
+			var ip net.IP
+			switch v := addr.(type) {
+			case *net.IPNet:
+				ip = v.IP
+			case *net.IPAddr:
+				ip = v.IP
+			}
+			if ip == nil || ip.IsLoopback() {
+				continue
+			}
+			ip = ip.To4()
+			if ip == nil {
+				continue // not an ipv4 address
+			}
+			return ip.String(), nil
+		}
+	}
+	return "", errors.New("")
 }

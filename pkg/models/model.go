@@ -18,4 +18,5 @@ type ResponseSchema struct {
 	Status  int         `json:"s"`
 	Message string      `json:"msg"`
 	Data    interface{} `json:"data"`
+	Creator string      `json:"creator"`
 }

@@ -7,11 +7,12 @@ import (
 )
 
 var Version string = "v1.0"
+var CREATOR_NAME = "Adhitya Rachman H"
 var CREATOR, PRODUCT_ID, PRODUCT = GetEnvVal()
 var MODE = os.Getenv("MODE")
 var allowOrigin []string = []string{"http://127.0.0.1:5500", "http://localhost:4200"}
 var allowMethods []string = []string{"POST", "OPTIONS", "GET", "PUT", "DELETE"}
-var allowheaders []string = []string{"Content-Type", "Authorization", "XA"}
+var allowheaders []string = []string{"Content-Type", "Authorization"}
 
 // 	"X-Arh",
 // 	"Accept",

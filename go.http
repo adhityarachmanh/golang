@@ -33,8 +33,8 @@ GET  http://localhost:21500/v1.0/api/music  HTTP/1.1
 Authorization: Arh 521b1893a90e4c1987dc8d20d9e4ba63
 ###
 
-POST  http://localhost:21500/v1.0/api/auth/updatevisitor  HTTP/1.1
-Authorization: Arh 3120f4f8af4c4ee2b989b29afc1b202f
+POST  https://adhityarachmanh-cv-api.herokuapp.com/djEuMC9hcGkvYXV0aC9hdXRvbG9naW4.arh  HTTP/1.1
+Authorization: asfasfasaf
 
 {
   "creator":"Adhitya Rachman H",

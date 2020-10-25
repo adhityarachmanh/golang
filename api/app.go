@@ -8,7 +8,7 @@ import (
 	"arh/pkg/utils"
 	"context"
 	"encoding/json"
-	// "fmt"
+	"fmt"
 	// "cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
@@ -16,8 +16,7 @@ import (
 	"google.golang.org/api/option"
 	"log"
 	"net/http"
-	"strings"
-	"time"
+	// "time"
 )
 
 var ctx = context.Background()
@@ -33,13 +32,11 @@ func (app *AppSchema) Initialize() {
 }
 
 func (app *AppSchema) initializeFirebase() {
-
-	// initial database
+	// initial firebase
 	var dbconn interface{}
 	utils.GetDecData("firebase", "", &dbconn)
 	data, _ := json.Marshal(dbconn)
 	opt := option.WithCredentialsJSON(data)
-	// opt := option.WithCredentialsFile("key/firebase.json")
 	Conn, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
 		log.Fatal(err)
@@ -54,88 +51,44 @@ func (app *AppSchema) initializeRoutes() {
 	app.modSkill()
 	app.modCertificate()
 	app.modAuth()
-
+	app.modMusic()
 }
 
-func (app *AppSchema) getToken(c *gin.Context) string {
-	token := c.GetHeader("Authorization")
-	utils.Tahan{
-		Coba: func() {
-			token = strings.Split(token, " ")[1]
-		},
-		Tangkap: func(e utils.Pengecualian) {
-			token = ""
-		},
-	}.Gas()
-	// token = strings.TrimSpace(token)
-	return token
-}
-
-func (app *AppSchema) loggingMiddleWare(c *gin.Context, description string) {
-	token := app.getToken(c)
-	client, _ := app.Firebase.Firestore(ctx)
-	var logging models.Logging
-	var status int = 0
-	loc, _ := time.LoadLocation("Asia/Jakarta")
-	logging.MacAddress, _ = utils.GetMacAddr()
-	logging.IPAddress, _ = utils.ExternalIP()
-	logging.Message = description
-	logging.URL = c.Request.RequestURI
-	logging.CreatedAt = time.Now().In(loc)
+func (app *AppSchema) BindRequestJSON(c *gin.Context, data interface{}) {
 	if config.MODE == "PROD" {
-		logging.URL = strings.ReplaceAll(c.Request.RequestURI, "/", "")
-		logging.URL = strings.ReplaceAll(c.Request.RequestURI, "."+strings.ToLower(config.CREATOR), "")
-		logging.URL = utils.Ed.BNE(6, 1).Dec(logging.URL)
+		var binding models.RequestProdSchema
+		c.BindJSON(&binding)
+		d := utils.Ed.BNE(6, 2).Dec(binding.Data)
+		json.Unmarshal([]byte(d), &data)
+	} else {
+		var binding models.RequestSchema
+		c.BindJSON(&binding)
+		byt, _ := json.Marshal(binding.Data)
+		json.Unmarshal(byt, &data)
 	}
-	if status == 0 {
-		client.Collection("visitor").Doc(token).Collection("logging").Add(ctx, logging)
-	}
-
 }
 
-func (app *AppSchema) routeMiddleware(c *gin.Context) (int, string) {
-
-	if _, ok := c.Request.Header["Authorization"]; !ok {
-		return 1, "Token tidak ditemukan"
-	}
-	token := app.getToken(c)
-	client, _ := app.Firebase.Firestore(ctx)
-	_, err := client.Collection("visitor").Doc(token).Get(ctx)
-	if err != nil {
-		return 1, "Token tidak terdaftar"
-	}
-
-	return 0, token
-}
-func Find(slice []string, val string) (int, bool) {
-	for i, item := range slice {
-		if item == val {
-			return i, true
-		}
-	}
-	return -1, false
-}
 func (app *AppSchema) routeRegister(method string, url string, handler gin.HandlerFunc) {
-	// modified route
 	app.Router.Handle(method, utils.RouteAPI(url), func(c *gin.Context) {
-		// handle API KEY
-		withoutMiddleware := []string{"auth/login"}
-		_, found := Find(withoutMiddleware, url)
-		if !found {
-			r, msg := app.routeMiddleware(c)
-			if r == 1 {
-				utils.ResponseAPIError(c, msg)
-				return
-			}
-			handler(c)
-		} else {
-			if _, ok := c.Request.Header["Authorization"]; !ok {
-				utils.ResponseAPIError(c, "Token tidak ditemukan")
-				return
-			}
-			handler(c)
-		}
-
+		utils.Tahan{
+			Coba: func() {
+				if _, ok := c.Request.Header["Authorization"]; !ok {
+					utils.Throw("Token tidak ditemukan")
+				}
+				_, exists := utils.Find([]string{
+					"auth/login",
+				}, url)
+				if !exists {
+					status := app.routeMiddleware(c)
+					if status == 1 {
+						utils.Throw("Token tidak terdaftar")
+					}
+				}
+				handler(c)
+			}, Tangkap: func(e utils.Exception) {
+				utils.ResponseAPIError(c, fmt.Sprint(e))
+			},
+		}.Gas()
 	})
 }
 
@@ -143,17 +96,17 @@ func (app *AppSchema) Run(addr string) {
 	// Middleware
 	allowOrigin, allowMethods, allowedHeaders, Debug := config.GetCorsConfig()
 	c := cors.New(cors.Options{
-		AllowedOrigins:   allowOrigin,
-		AllowedMethods:   allowMethods,
-		AllowedHeaders:   allowedHeaders,
-		AllowCredentials: true,
-		Debug:            Debug,
+		AllowedOrigins: allowOrigin,
+		AllowedMethods: allowMethods,
+		AllowedHeaders: allowedHeaders,
+		// AllowCredentials: true,
+		Debug: Debug,
 	})
 	srv := &http.Server{
-		Handler:      c.Handler(app.Router),
-		Addr:         addr,
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+		Handler: c.Handler(app.Router),
+		Addr:    addr,
+		// WriteTimeout: 15 * time.Second,
+		// ReadTimeout:  15 * time.Second,
 	}
 	log.Fatal(srv.ListenAndServe())
 }

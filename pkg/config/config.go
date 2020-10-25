@@ -7,10 +7,10 @@ import (
 )
 
 var Version string = "v1.0"
-var CREATOR_NAME string = "Adhitya Rachman H"
-var CREATOR, PRODUCT_ID, PRODUCT = GetEnvVal()
+
+var CREATOR, PRODUCT_ID, PRODUCT, CREATOR_NAME = GetEnvVal()
 var MODE = os.Getenv("MODE")
-var allowOrigin []string = []string{"http://127.0.0.1:5500", "http://localhost:4200"}
+var allowOrigin []string = []string{"http://localhost:4200"}
 var allowMethods []string = []string{"POST", "OPTIONS", "GET", "PUT", "DELETE"}
 var allowheaders []string = []string{"Content-Type", "Authorization"}
 
@@ -31,12 +31,13 @@ var allowheaders []string = []string{"Content-Type", "Authorization"}
 // }
 var Debug bool = true
 
-func GetEnvVal() (string, string, string) {
+func GetEnvVal() (string, string, string, string) {
 	godotenv.Load()
 	c := os.Getenv("CREATOR")
 	pi := os.Getenv("PRODUCT_ID")
 	p := os.Getenv("PRODUCT")
-	return c, pi, p
+	cn := os.Getenv("CREATOR_NAME")
+	return c, pi, p, cn
 }
 
 func GetCorsConfig() ([]string, []string, []string, bool) {

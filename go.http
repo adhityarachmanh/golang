@@ -1,39 +1,4 @@
 
-# SGNIN
-
-POST http://localhost:21500/api/auth/signin HTTP/1.1
-Content-Type: application/json
-# Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTk0OTk0NDksInVzZXJuYW1lIjoiYWRoaXR5YXJhY2htYW5oIn0.m7NHJVQ2MXax849bnQ2W5UtohpROpP0MDM_AATnTX3k
-
-{
-    "username":"user",
-    "password":"user",
-    "notiftoken":""
-}
-
-###
-# SIGNUP
-POST http://localhost:21500/api/auth/signup HTTP/1.1
-Content-Type: application/json
-
- {
-    "address": "",
-    "email": "user@arh.dev",
-    "fullname": "user",
-    "password": "user",
-    "phone": "628123456789",
-    "user_role": 0,
-    "username": "user"
-  }
-###
-POSt http://localhost:21500/api/auth/token HTTP/1.1
-Content-Type: application/json
-XA: isferdUYlsIJ?cmYBJa6msMJUMm
-
-{
-  "notiftoken":""
-}
-
 ###
 POST http://localhost:21500/v1.0/api/auth/login HTTP/1.1
 Content-Type: application/json
@@ -46,21 +11,32 @@ Authorization: b8a820289e6848b6b8ee970fa45abbeb
 ###
 GET http://localhost:21500/v1.0/api/certificate HTTP/1.1
 Content-Type: application/json
-Authorization:Arh 351db74fb4664c6a8fa98f6ff703cd34
+Authorization:Arh 521b1893a90e4c1987dc8d20d9e4ba63
 
 ###
 POST  https://arh-cv-api.herokuapp.com/djEuMC9hcGkvc2tpbGw.arh HTTP/1.1
 Content-Type: application/json
 
 ###
-POST  https://fcm.googleapis.com/fcm/send HTTP/1.1
-Authorization: key=AAAArXzEV5k:APA91bF_zqbLqyE-p_W-ZWRTFXdzlq9Dsq4uOWl9XoqOcDDCqLK2yrTSA6If3DzovLinWAjnHl2tieGdQXLEDXLezbhTSl4mb0dOWzLSw9FmttMtQMKxO5IRESggsFa78JyP3vQOnDQj
+POST http://localhost:21500/v1.0/api/auth/updateVisitor HTTP/1.1
 Content-Type: application/json
+Authorization: Arh 1672ba708c284dd6b04398feefee9dbd
 
 {
-  "notification": {
-    "title": "Hey there", 
-    "body": "Subscribe to mighty ghost hack youtube channel"
-  },
-  "to" : "eJXApTYeV5hUc9JgkHHP8M:APA91bFamkDwc1U6tZ497xTg455o8BTAm_rfvDUjU7zC-74ptwv5DgUq03VTmy_dtZM6qYHdZoHRzBI_IZFWzCNBQdcDjiKQVo3FRFUjsLHadO1EzrEI6JtEInZeME2RrNcJ2_MW5FRC"
+   "data":"CWjSywZJiHMGqwrM?xr3ysbsywnM@wfSieEGDq",
+   "creator": "Adhitya Rachman H"
+}
+
+###
+
+GET  http://localhost:21500/v1.0/api/music  HTTP/1.1
+Authorization: Arh 521b1893a90e4c1987dc8d20d9e4ba63
+###
+
+POST  http://localhost:21500/v1.0/api/auth/updatevisitor  HTTP/1.1
+Authorization: Arh 3120f4f8af4c4ee2b989b29afc1b202f
+
+{
+  "creator":"Adhitya Rachman H",
+  "data":{"name":"Adhitya Rachman H","chat":false}
 }

@@ -1,3 +1,5 @@
+// CREATOR : Adhitya Rachman H
+
 package api
 
 import (
@@ -9,20 +11,20 @@ import (
 )
 
 func (app *AppSchema) modCertificate() {
-	app.routeRegister("GET", "certificate", app.getCertificate)
+
+	app.routeRegister("POST", "certificate", app.getCertificate)
 }
 
 func (app *AppSchema) getCertificate(c *gin.Context) {
+	var data []models.CertificateSchema
+	var d models.CertificateSchema
 	utils.Tahan{
 		Coba: func() {
+			// app.loggingMiddleWare(c, "ACCESS_API")
 			client, _ := app.Firebase.Firestore(ctx)
-
-			var data []models.CertificateSchema
 			result := client.Collection("certificates").Documents(ctx)
 			for {
-				var d models.CertificateSchema
 				doc, err := result.Next()
-
 				if err != nil {
 					break
 				}
@@ -30,11 +32,10 @@ func (app *AppSchema) getCertificate(c *gin.Context) {
 				data = append(data, d)
 			}
 			defer client.Close()
-
 			utils.ResponseAPI(c, models.ResponseSchema{Data: data})
 		},
-		Tangkap: func(e utils.Pengecualian) {
-			utils.ResponseAPIError(c, "Server Error!")
+		Tangkap: func(e utils.Exception) {
+			utils.ResponseAPIError(c, "Telah terjadi kesalahan!")
 		},
 	}.Gas()
 

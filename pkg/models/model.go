@@ -20,3 +20,12 @@ type ResponseSchema struct {
 	Data    interface{} `json:"data"`
 	Creator string      `json:"creator"`
 }
+
+type RequestSchema struct {
+	Data    interface{} `json:"data"`
+	Creator string      `json:"creator"`
+}
+type RequestProdSchema struct {
+	Data    string `json:"data"`
+	Creator string `json:"creator"`
+}

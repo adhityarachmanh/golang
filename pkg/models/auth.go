@@ -7,8 +7,12 @@ type Chatting struct {
 }
 
 type Visitor struct {
-	Name *string `json:"name" firestore:"name"`
-	Chat bool    `json:"chat" firestore:"chat"`
+	Uid  string `json:"uid" firestore:"uid"`
+	Name string `json:"name" firestore:"name"`
+	Chat bool   `json:"chat" firestore:"chat"`
+}
+type VisitorRequest struct {
+	Name string `json:"name" firestore:"name"`
 }
 
 type Logging struct {
@@ -17,4 +21,5 @@ type Logging struct {
 	MacAddress []string  `json:"macaddress" firestore:"macaddress"`
 	Message    string    `json:"message" firestore:"message"`
 	CreatedAt  time.Time `json:"cratedAt" firestore:"cratedAt"`
+	UserAgent  string    `json:"useragent" firestore:"useragent"`
 }

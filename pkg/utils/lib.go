@@ -20,14 +20,23 @@ import (
 	"time"
 )
 
+func Find(slice []string, val string) (int, bool) {
+	for i, item := range slice {
+		if item == val {
+			return i, true
+		}
+	}
+	return -1, false
+}
+
 type Tahan struct {
 	Coba    func()
-	Tangkap func(Pengecualian)
+	Tangkap func(Exception)
 	Selesai func()
 }
-type Pengecualian interface{}
+type Exception interface{}
 
-func Throw(up Pengecualian) {
+func Throw(up Exception) {
 	panic(up)
 }
 
@@ -77,7 +86,7 @@ func randomChoice(charset string) string {
 	return string(b)
 }
 func ResponseAPIError(c *gin.Context, message string) {
-	c.JSON(200, models.ResponseSchema{Message: message, Status: 1, Data: "", Creator: config.CREATOR_NAME})
+	c.JSON(200, models.ResponseSchema{Message: message, Status: 1, Data: nil, Creator: config.CREATOR_NAME})
 }
 func ResponseAPI(c *gin.Context, response models.ResponseSchema) {
 	response.Creator = config.CREATOR_NAME

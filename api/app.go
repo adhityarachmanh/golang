@@ -68,28 +68,35 @@ func (app *AppSchema) BindRequestJSON(c *gin.Context, data interface{}) {
 	}
 }
 
-func (app *AppSchema) routeRegister(method string, url string, handler gin.HandlerFunc) {
+func (app *AppSchema) routeClientRegister(method string, url string, handler gin.HandlerFunc, middleware bool) {
 	app.Router.Handle(method, utils.RouteAPI(url), func(c *gin.Context) {
-		utils.Tahan{
-			Coba: func() {
-				if _, ok := c.Request.Header["Authorization"]; !ok {
-					utils.Throw("Token tidak ditemukan")
-				}
-				_, exists := utils.Find([]string{
-					"auth/login",
-				}, url)
-				if !exists {
-					status := app.routeMiddleware(c)
-					if status == 1 {
-						utils.Throw("Token tidak terdaftar")
-					}
-				}
-				handler(c)
-			}, Tangkap: func(e utils.Exception) {
-				utils.ResponseAPIError(c, fmt.Sprint(e))
-			},
-		}.Gas()
+		app.routeRegister(c, handler, middleware, "visitor")
 	})
+}
+func (app *AppSchema) routeAdminRegister(method string, url string, handler gin.HandlerFunc, middleware bool) {
+	app.Router.Handle(method, utils.RouteAPI(url), func(c *gin.Context) {
+		app.routeRegister(c, handler, middleware, "admins")
+	})
+}
+
+func (app *AppSchema) routeRegister(c *gin.Context, handler gin.HandlerFunc, middleware bool, t string) {
+	utils.Block{
+		Try: func() {
+			if _, ok := c.Request.Header["Authorization"]; !ok {
+				utils.Throw("Token tidak ditemukan")
+			}
+
+			if middleware {
+				status := app.routeMiddleware(c, t)
+				if status == 1 {
+					utils.Throw("Token tidak terdaftar")
+				}
+			}
+			handler(c)
+		}, Catch: func(e utils.Exception) {
+			utils.ResponseAPIError(c, fmt.Sprint(e))
+		},
+	}.Go()
 }
 
 func (app *AppSchema) Run(addr string) {

@@ -10,9 +10,9 @@ import (
 )
 
 func (app *AppSchema) modAuth() {
-	app.routeRegister("POST", "auth/login", app.loginVisitor)
-	app.routeRegister("POST", "auth/autologin", app.autoLoginVisitor)
-	app.routeRegister("POST", "auth/updatevisitor", app.editVisitor)
+	app.routeClientRegister("POST", "auth/login", app.loginVisitor, false)
+	app.routeClientRegister("POST", "auth/autologin", app.autoLoginVisitor, true)
+	app.routeClientRegister("POST", "auth/updatevisitor", app.editVisitor, true)
 
 }
 
@@ -20,8 +20,8 @@ func (app *AppSchema) editVisitor(c *gin.Context) {
 	var visitorRequest models.VisitorRequest
 	var visitor models.Visitor
 
-	utils.Tahan{
-		Coba: func() {
+	utils.Block{
+		Try: func() {
 			app.BindRequestJSON(c, &visitorRequest)
 			visitor.Name = visitorRequest.Name
 			visitor.Uid = app.getToken(c)
@@ -41,33 +41,33 @@ func (app *AppSchema) editVisitor(c *gin.Context) {
 			result.DataTo(&visitor)
 
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
-		}, Tangkap: func(e utils.Exception) {
+		}, Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, "Telah terjadi kesalahan!")
 		},
-	}.Gas()
+	}.Go()
 
 }
 func (app *AppSchema) autoLoginVisitor(c *gin.Context) {
 	var visitor models.Visitor
-	utils.Tahan{
-		Coba: func() {
+	utils.Block{
+		Try: func() {
 			visitor.Uid = app.getToken(c)
 			client, _ := app.Firebase.Firestore(ctx)
 			result, _ := client.Collection("visitor").Doc(visitor.Uid).Get(ctx)
 			result.DataTo(&visitor)
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
-		}, Tangkap: func(e utils.Exception) {
+		}, Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, "Telah terjadi kesalahan!")
 		},
-	}.Gas()
+	}.Go()
 
 }
 
 func (app *AppSchema) loginVisitor(c *gin.Context) {
 
 	var visitor models.Visitor
-	utils.Tahan{
-		Coba: func() {
+	utils.Block{
+		Try: func() {
 			visitor.Uid = app.getToken(c)
 			client, _ := app.Firebase.Firestore(ctx)
 
@@ -79,12 +79,12 @@ func (app *AppSchema) loginVisitor(c *gin.Context) {
 			if err != nil {
 				utils.Throw("")
 			}
-			app.loggingMiddleWare(c, "LOGIN_SUCCESS")
+			app.loggingMiddleWare(c, "visitor", "LOGIN_SUCCESS")
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		},
-		Tangkap: func(e utils.Exception) {
+		Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, "Telah terjadi kesalahan!")
 		},
-	}.Gas()
+	}.Go()
 
 }

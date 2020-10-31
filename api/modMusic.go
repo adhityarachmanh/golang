@@ -111,14 +111,14 @@ func songMapping(song string) []interface{} {
 }
 func (app *AppSchema) modMusic() {
 	// app.routeRegister("POST", "music/add", app.addMusic)
-	app.routeRegister("GET", "music", app.getMusic)
+	app.routeClientRegister("GET", "music", app.getMusic, true)
 }
 
 func (app *AppSchema) getMusic(c *gin.Context) {
 	var data []models.MusicSchema
 	var d models.MusicSchema
-	utils.Tahan{
-		Coba: func() {
+	utils.Block{
+		Try: func() {
 			// app.loggingMiddleWare(c, "ACCESS_API")
 			client, _ := app.Firebase.Firestore(ctx)
 			result := client.Collection("music").OrderBy("title", firestore.Asc).Documents(ctx)
@@ -135,10 +135,10 @@ func (app *AppSchema) getMusic(c *gin.Context) {
 			defer client.Close()
 			utils.ResponseAPI(c, models.ResponseSchema{Data: data})
 		},
-		Tangkap: func(e utils.Exception) {
+		Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, "Telah terjadi kesalahan!")
 		},
-	}.Gas()
+	}.Go()
 }
 
 func (app *AppSchema) addMusic(c *gin.Context) {
@@ -146,8 +146,8 @@ func (app *AppSchema) addMusic(c *gin.Context) {
 	var req models.RequestSchema
 	var data []models.MusicSchema
 	c.BindJSON(&path)
-	utils.Tahan{
-		Coba: func() {
+	utils.Block{
+		Try: func() {
 			jsonFile, _ := os.Open("/Users/adhityarachmanh/projects/CV/api/music.json")
 			d, _ := ioutil.ReadAll(jsonFile)
 			json.Unmarshal(d, &req)
@@ -165,8 +165,8 @@ func (app *AppSchema) addMusic(c *gin.Context) {
 
 			utils.ResponseAPI(c, models.ResponseSchema{Data: data})
 		},
-		Tangkap: func(e utils.Exception) {
+		Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, fmt.Sprintf("%s", e))
 		},
-	}.Gas()
+	}.Go()
 }

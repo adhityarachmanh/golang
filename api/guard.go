@@ -12,19 +12,19 @@ import (
 
 func (app *AppSchema) getToken(c *gin.Context) string {
 	var token string
-	utils.Tahan{
-		Coba: func() {
+	utils.Block{
+		Try: func() {
 			token = c.GetHeader("Authorization")
 			token = strings.Split(token, " ")[1]
 		},
-		Tangkap: func(e utils.Exception) {
+		Catch: func(e utils.Exception) {
 			token = ""
 		},
-	}.Gas()
+	}.Go()
 	return token
 }
 
-func (app *AppSchema) loggingMiddleWare(c *gin.Context, description string) {
+func (app *AppSchema) loggingMiddleWare(c *gin.Context, t string, description string) {
 	token := app.getToken(c)
 	client, _ := app.Firebase.Firestore(ctx)
 	var logging models.Logging
@@ -40,14 +40,14 @@ func (app *AppSchema) loggingMiddleWare(c *gin.Context, description string) {
 		logging.URL = strings.ReplaceAll(logging.URL, "."+strings.ToLower(config.CREATOR), "")
 		logging.URL = utils.Ed.BNE(6, 1).Dec(logging.URL)
 	}
-	client.Collection("visitor").Doc(token).Collection("logging").Add(ctx, logging)
+	client.Collection(t).Doc(token).Collection("logging").Add(ctx, logging)
 
 }
 
-func (app *AppSchema) routeMiddleware(c *gin.Context) int {
+func (app *AppSchema) routeMiddleware(c *gin.Context, t string) int {
 	token := app.getToken(c)
 	client, _ := app.Firebase.Firestore(ctx)
-	_, err := client.Collection("visitor").Doc(token).Get(ctx)
+	_, err := client.Collection(t).Doc(token).Get(ctx)
 	if err != nil {
 		return 1
 	}

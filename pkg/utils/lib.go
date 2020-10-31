@@ -29,10 +29,10 @@ func Find(slice []string, val string) (int, bool) {
 	return -1, false
 }
 
-type Tahan struct {
-	Coba    func()
-	Tangkap func(Exception)
-	Selesai func()
+type Block struct {
+	Try    func()
+	Catch  func(Exception)
+	Finish func()
 }
 type Exception interface{}
 
@@ -40,18 +40,18 @@ func Throw(up Exception) {
 	panic(up)
 }
 
-func (cts Tahan) Gas() {
-	if cts.Selesai != nil {
-		defer cts.Selesai()
+func (cts Block) Go() {
+	if cts.Finish != nil {
+		defer cts.Finish()
 	}
-	if cts.Tangkap != nil {
+	if cts.Catch != nil {
 		defer func() {
 			if r := recover(); r != nil {
-				cts.Tangkap(r)
+				cts.Catch(r)
 			}
 		}()
 	}
-	cts.Coba()
+	cts.Try()
 }
 
 func RouteAPI(route string) string {

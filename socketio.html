@@ -97,7 +97,6 @@
     }
     socket.on("connect", async function (msg) {
       var uuid = await getUUID()
-      console.log(uuid);
       socket.emit("initialize", uuid)
     })
  

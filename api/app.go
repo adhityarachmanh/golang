@@ -6,11 +6,11 @@ import (
 	"arh/pkg/config"
 	"arh/pkg/models"
 	"arh/pkg/utils"
+
 	"context"
 	"encoding/json"
-	"fmt"
-	// "cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/cors"
 	"google.golang.org/api/option"
@@ -52,6 +52,8 @@ func (app *AppSchema) initializeRoutes() {
 	app.modCertificate()
 	app.modAuth()
 	app.modMusic()
+	app.modProject()
+
 }
 
 func (app *AppSchema) BindRequestJSON(c *gin.Context, data interface{}) {
@@ -68,35 +70,26 @@ func (app *AppSchema) BindRequestJSON(c *gin.Context, data interface{}) {
 	}
 }
 
-func (app *AppSchema) routeClientRegister(method string, url string, handler gin.HandlerFunc, middleware bool) {
+func (app *AppSchema) routeRegister(method string, url string, handler gin.HandlerFunc, middleware bool) {
 	app.Router.Handle(method, utils.RouteAPI(url), func(c *gin.Context) {
-		app.routeRegister(c, handler, middleware, "visitor")
-	})
-}
-func (app *AppSchema) routeAdminRegister(method string, url string, handler gin.HandlerFunc, middleware bool) {
-	app.Router.Handle(method, utils.RouteAPI(url), func(c *gin.Context) {
-		app.routeRegister(c, handler, middleware, "admins")
-	})
-}
-
-func (app *AppSchema) routeRegister(c *gin.Context, handler gin.HandlerFunc, middleware bool, t string) {
-	utils.Block{
-		Try: func() {
-			if _, ok := c.Request.Header["Authorization"]; !ok {
-				utils.Throw("Token tidak ditemukan")
-			}
-
-			if middleware {
-				status := app.routeMiddleware(c, t)
-				if status == 1 {
-					utils.Throw("Token tidak terdaftar")
+		utils.Block{
+			Try: func() {
+				if _, ok := c.Request.Header["Authorization"]; !ok {
+					utils.Throw("Token tidak ditemukan")
 				}
-			}
-			handler(c)
-		}, Catch: func(e utils.Exception) {
-			utils.ResponseAPIError(c, fmt.Sprint(e))
-		},
-	}.Go()
+
+				if middleware {
+					status := app.routeMiddleware(c)
+					if status == 1 {
+						utils.Throw("Token tidak terdaftar")
+					}
+				}
+				handler(c)
+			}, Catch: func(e utils.Exception) {
+				utils.ResponseAPIError(c, fmt.Sprint(e))
+			},
+		}.Go()
+	})
 }
 
 func (app *AppSchema) Run(addr string) {

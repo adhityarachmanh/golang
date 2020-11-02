@@ -11,7 +11,7 @@ import (
 )
 
 func (app *AppSchema) modCertificate() {
-	app.routeClientRegister("POST", "certificate", app.getCertificate, true)
+	app.routeRegister("POST", "certificate", app.getCertificate, true)
 }
 
 func (app *AppSchema) getCertificate(c *gin.Context) {
@@ -19,7 +19,6 @@ func (app *AppSchema) getCertificate(c *gin.Context) {
 	var d models.CertificateSchema
 	utils.Block{
 		Try: func() {
-			// app.loggingMiddleWare(c, "ACCESS_API")
 			client, _ := app.Firebase.Firestore(ctx)
 			result := client.Collection("certificates").Documents(ctx)
 			for {

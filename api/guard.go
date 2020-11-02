@@ -4,28 +4,37 @@ import (
 	"arh/pkg/config"
 	"arh/pkg/models"
 	"arh/pkg/utils"
+	"encoding/json"
 	// "cloud.google.com/go/firestore"
 	"github.com/gin-gonic/gin"
 	"strings"
 	"time"
 )
 
-func (app *AppSchema) getToken(c *gin.Context) string {
-	var token string
-	utils.Block{
-		Try: func() {
-			token = c.GetHeader("Authorization")
-			token = strings.Split(token, " ")[1]
-		},
-		Catch: func(e utils.Exception) {
-			token = ""
-		},
-	}.Go()
-	return token
+type TokenData struct {
+	Type  string `json:"type"`
+	Token string `json:"token"`
 }
 
-func (app *AppSchema) loggingMiddleWare(c *gin.Context, t string, description string) {
-	token := app.getToken(c)
+func (app *AppSchema) getToken(c *gin.Context) (string, string) {
+	var tokenHeader string
+	var data TokenData
+	utils.Block{
+		Try: func() {
+			tokenHeader = c.GetHeader("Authorization")
+			tokenHeader = strings.Split(tokenHeader, " ")[1]
+			tokenHeader = utils.Ed.BNE(6, 1).Dec(tokenHeader)
+			json.Unmarshal([]byte(tokenHeader), &data)
+		},
+		Catch: func(e utils.Exception) {
+			data = TokenData{Type: "", Token: ""}
+		},
+	}.Go()
+	return data.Token, data.Type
+}
+
+func (app *AppSchema) loggingMiddleWare(c *gin.Context, description string) {
+	Token, Type := app.getToken(c)
 	client, _ := app.Firebase.Firestore(ctx)
 	var logging models.Logging
 	loc, _ := time.LoadLocation("Asia/Jakarta")
@@ -40,14 +49,14 @@ func (app *AppSchema) loggingMiddleWare(c *gin.Context, t string, description st
 		logging.URL = strings.ReplaceAll(logging.URL, "."+strings.ToLower(config.CREATOR), "")
 		logging.URL = utils.Ed.BNE(6, 1).Dec(logging.URL)
 	}
-	client.Collection(t).Doc(token).Collection("logging").Add(ctx, logging)
+	client.Collection(Type).Doc(Token).Collection("logging").Add(ctx, logging)
 
 }
 
-func (app *AppSchema) routeMiddleware(c *gin.Context, t string) int {
-	token := app.getToken(c)
+func (app *AppSchema) routeMiddleware(c *gin.Context) int {
+	Token, Type := app.getToken(c)
 	client, _ := app.Firebase.Firestore(ctx)
-	_, err := client.Collection(t).Doc(token).Get(ctx)
+	_, err := client.Collection(Type).Doc(Token).Get(ctx)
 	if err != nil {
 		return 1
 	}

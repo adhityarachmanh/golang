@@ -11,7 +11,7 @@ import (
 )
 
 func (app *AppSchema) modSkill() {
-	app.routeClientRegister("POST", "skill", app.getSkill, true)
+	app.routeRegister("POST", "skill", app.getSkill, true)
 	// if config.MODE == "DEV" {
 	// 	app.routeRegister("POST", "add-skill", app.addSkill)
 	// }
@@ -19,20 +19,9 @@ func (app *AppSchema) modSkill() {
 }
 func (app *AppSchema) getSkill(c *gin.Context) {
 	var data []models.SkillSchema
-	var d models.SkillSchema
 	utils.Block{
 		Try: func() {
-			client, _ := app.Firebase.Firestore(ctx)
-			result := client.Collection("skill").Documents(ctx)
-			for {
-				doc, err := result.Next()
-				if err != nil {
-					break
-				}
-				doc.DataTo(&d)
-				data = append(data, d)
-			}
-			defer client.Close()
+			app.firestoreByCollection("skill", &data)
 			utils.ResponseAPI(c, models.ResponseSchema{Data: data})
 		},
 		Catch: func(e utils.Exception) {

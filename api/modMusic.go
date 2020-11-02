@@ -22,9 +22,9 @@ func (app *AppSchema) getMusic(c *gin.Context) {
 		Try: func() {
 			app.firestoreByCollection("music", &data)
 			for i := 0; i < len(data); i++ {
-				d := data[i]
-				d.Song = utils.SongMapping(d.SongString)
-				d.SongString = ""
+				jd, _ := json.Marshal(data[i].Song)
+				data[i].Song = utils.SongMapping(string(jd))
+
 			}
 			utils.ResponseAPI(c, models.ResponseSchema{Data: data})
 		},

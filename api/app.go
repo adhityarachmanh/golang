@@ -6,7 +6,6 @@ import (
 	"arh/pkg/config"
 	"arh/pkg/models"
 	"arh/pkg/utils"
-
 	"context"
 	"encoding/json"
 	firebase "firebase.google.com/go"
@@ -47,6 +46,9 @@ func (app *AppSchema) initializeFirebase() {
 func (app *AppSchema) initializeRoutes() {
 	// merge semua route
 	app.Router = gin.Default()
+	app.Router.Use(gin.Logger())
+	app.Router.LoadHTMLGlob("templates/*.html")
+	app.Router.Static("/static", "static")
 	app.Router.GET("/", app.index)
 	app.modSkill()
 	app.modCertificate()
@@ -108,7 +110,9 @@ func (app *AppSchema) Run(addr string) {
 }
 
 func (app *AppSchema) index(c *gin.Context) {
-
-	c.JSON(http.StatusOK, models.ResponseSchema{Status: 0, Message: "Hello Brow"})
+	c.HTML(http.StatusOK, "creator.html", gin.H{"zproduct": "Protofolio", "zcreator": config.CREATOR, "add": func(a int, b int) int {
+		return a + b
+	}})
+	// c.JSON(http.StatusOK, models.ResponseSchema{Status: 0, Message: "Hello Brow"})
 
 }

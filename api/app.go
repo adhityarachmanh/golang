@@ -110,9 +110,7 @@ func (app *AppSchema) Run(addr string) {
 }
 
 func (app *AppSchema) index(c *gin.Context) {
-	c.HTML(http.StatusOK, "creator.html", gin.H{"zproduct": "Protofolio", "zcreator": config.CREATOR, "add": func(a int, b int) int {
-		return a + b
-	}})
+	c.HTML(http.StatusOK, "creator.html", gin.H{"zproduct": "Protofolio", "zcreator": config.CREATOR})
 	// c.JSON(http.StatusOK, models.ResponseSchema{Status: 0, Message: "Hello Brow"})
 
 }

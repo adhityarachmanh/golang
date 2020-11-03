@@ -11,7 +11,7 @@ import (
 )
 
 func (app *AppSchema) modCertificate() {
-	app.routeRegister("POST", "certificate", app.getCertificate, true)
+	app.routeRegister("GET", "certificate", app.getCertificate, false)
 }
 
 func (app *AppSchema) getCertificate(c *gin.Context) {

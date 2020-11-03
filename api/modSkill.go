@@ -11,7 +11,7 @@ import (
 )
 
 func (app *AppSchema) modSkill() {
-	app.routeRegister("POST", "skill", app.getSkill, true)
+	app.routeRegister("GET", "skill", app.getSkill, false)
 	// if config.MODE == "DEV" {
 	// 	app.routeRegister("POST", "add-skill", app.addSkill)
 	// }

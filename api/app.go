@@ -74,14 +74,10 @@ func (app *AppSchema) routeRegister(method string, url string, handler gin.Handl
 	app.Router.Handle(method, utils.RouteAPI(url), func(c *gin.Context) {
 		utils.Block{
 			Try: func() {
-				if _, ok := c.Request.Header["Authorization"]; !ok {
-					utils.Throw("Token tidak ditemukan")
-				}
-
 				if middleware {
-					status := app.routeMiddleware(c)
+					status, msg := app.routeMiddleware(c)
 					if status == 1 {
-						utils.Throw("Token tidak terdaftar")
+						utils.Throw(msg)
 					}
 				}
 				handler(c)

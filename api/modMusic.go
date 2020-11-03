@@ -13,7 +13,7 @@ import (
 
 func (app *AppSchema) modMusic() {
 	// app.routeRegister("POST", "music/add", app.addMusic)
-	app.routeRegister("GET", "music", app.getMusic, true)
+	app.routeRegister("GET", "music", app.getMusic, false)
 }
 
 func (app *AppSchema) getMusic(c *gin.Context) {

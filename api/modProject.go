@@ -9,7 +9,7 @@ import (
 )
 
 func (app *AppSchema) modProject() {
-	app.routeRegister("POST", "projects", app.getProject, true)
+	app.routeRegister("GET", "projects", app.getProject, false)
 }
 
 func (app *AppSchema) getProject(c *gin.Context) {

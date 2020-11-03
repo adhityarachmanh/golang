@@ -53,12 +53,15 @@ func (app *AppSchema) loggingMiddleWare(c *gin.Context, description string) {
 
 }
 
-func (app *AppSchema) routeMiddleware(c *gin.Context) int {
+func (app *AppSchema) routeMiddleware(c *gin.Context) (int, string) {
+	if _, ok := c.Request.Header["Authorization"]; !ok {
+		return 1, "Token not found."
+	}
 	Token, Type := app.getToken(c)
 	client, _ := app.Firebase.Firestore(ctx)
 	_, err := client.Collection(Type).Doc(Token).Get(ctx)
 	if err != nil {
-		return 1
+		return 1, "Token not registered."
 	}
-	return 0
+	return 0, ""
 }

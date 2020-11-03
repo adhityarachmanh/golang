@@ -49,7 +49,7 @@ func (app *AppSchema) getProject(c *gin.Context) {
 			utils.ResponseAPI(c, models.ResponseSchema{Data: projects})
 		},
 		Catch: func(e utils.Exception) {
-			utils.ResponseAPIError(c, "Telah terjadi kesalahan!")
+			utils.ResponseAPIError(c, "Something Wrong!")
 		},
 	}.Go()
 }

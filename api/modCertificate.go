@@ -33,7 +33,7 @@ func (app *AppSchema) getCertificate(c *gin.Context) {
 			utils.ResponseAPI(c, models.ResponseSchema{Data: data})
 		},
 		Catch: func(e utils.Exception) {
-			utils.ResponseAPIError(c, "Telah terjadi kesalahan!")
+			utils.ResponseAPIError(c, "Something Wrong!")
 		},
 	}.Go()
 

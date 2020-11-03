@@ -42,7 +42,7 @@ func (app *AppSchema) editVisitor(c *gin.Context) {
 
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		}, Catch: func(e utils.Exception) {
-			utils.ResponseAPIError(c, "Telah terjadi kesalahan!")
+			utils.ResponseAPIError(c, "Something Wrong!")
 		},
 	}.Go()
 
@@ -52,12 +52,11 @@ func (app *AppSchema) autoLoginVisitor(c *gin.Context) {
 	utils.Block{
 		Try: func() {
 			visitor.Uid, _ = app.getToken(c)
-			client, _ := app.Firebase.Firestore(ctx)
-			result, _ := client.Collection("visitors").Doc(visitor.Uid).Get(ctx)
-			result.DataTo(&visitor)
+			app.firestoreGetDocument("visitors", visitor.Uid, visitor)
+			app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		}, Catch: func(e utils.Exception) {
-			utils.ResponseAPIError(c, "Telah terjadi kesalahan!")
+			utils.ResponseAPIError(c, "Something Wrong!")
 		},
 	}.Go()
 
@@ -83,7 +82,7 @@ func (app *AppSchema) loginVisitor(c *gin.Context) {
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		},
 		Catch: func(e utils.Exception) {
-			utils.ResponseAPIError(c, "Telah terjadi kesalahan!")
+			utils.ResponseAPIError(c, "Something Wrong!")
 		},
 	}.Go()
 

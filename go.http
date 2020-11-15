@@ -30,9 +30,13 @@ Authorization: Arh 1672ba708c284dd6b04398feefee9dbd
 ###
 
 GET  http://localhost:21500/v1.0/api/music  HTTP/1.1
-Authorization: Arh 521b1893a90e4c1987dc8d20d9e4ba63
+Authorization: Arh eyJ0b2tlbiI6Ijk4OTc0NzViOTczMTQwNTc5OTA3OWQ5NDQ5YjdiYmI1IiwidHlwZSI6InZpc2l0b3JzIn0
 ###
 
-POST  http://localhost:21500/v1.0/api/projects  HTTP/1.1
+GET  http://localhost:21500/v1.0/api/projects  HTTP/1.1
 Authorization: Arh eyJ0b2tlbiI6Ijk4OTc0NzViOTczMTQwNTc5OTA3OWQ5NDQ5YjdiYmI1IiwidHlwZSI6InZpc2l0b3JzIn0
 
+###
+POST http://localhost:21500/v1.0/api/auth/autologin HTTP/1.1
+Content-Type: application/json
+Authorization: Arh eyJ0b2tlbiI6Ijk5NDcxOWViYmM0NDQxODliNWMxOWMwMTEzZWQ3NWIwIiwidHlwZSI6InZpc2l0b3JzIn0

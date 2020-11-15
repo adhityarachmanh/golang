@@ -3,7 +3,7 @@ package api
 import (
 	"arh/pkg/models"
 	"arh/pkg/utils"
-	// "cloud.google.com/go/firestore"
+	"cloud.google.com/go/firestore"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +26,10 @@ func (app *AppSchema) getProject(c *gin.Context) {
 
 			for i := 0; i < len(projects); i++ {
 				project := projects[i]
+				client, _ := app.Firebase.Firestore(ctx)
+				result := client.Collection("project").Doc(project.ProjectId).Collection("album").OrderBy("no", firestore.Asc).Documents(ctx)
+				app.mappingDataFirestore(result, &projects[i].Album)
+				defer client.Close()
 				for j := 0; j < len(project.Tools); j++ {
 					tool := project.Tools[j]
 					for k := 0; k < len(skills); k++ {

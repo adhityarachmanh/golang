@@ -52,8 +52,8 @@ func (app *AppSchema) autoLoginVisitor(c *gin.Context) {
 	utils.Block{
 		Try: func() {
 			visitor.Uid, _ = app.getToken(c)
-			app.firestoreGetDocument("visitors", visitor.Uid, visitor)
-			app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")
+			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
+			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		}, Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, "Something Wrong!")

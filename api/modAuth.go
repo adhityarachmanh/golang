@@ -7,6 +7,7 @@ import (
 	"arh/pkg/utils"
 	"cloud.google.com/go/firestore"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func (app *AppSchema) modAuth() {
@@ -19,7 +20,7 @@ func (app *AppSchema) modAuth() {
 func (app *AppSchema) editVisitor(c *gin.Context) {
 	var visitorRequest models.VisitorRequest
 	var visitor models.Visitor
-
+	var data models.ChattingAdd
 	utils.Block{
 		Try: func() {
 			app.BindRequestJSON(c, &visitorRequest)
@@ -37,6 +38,16 @@ func (app *AppSchema) editVisitor(c *gin.Context) {
 			if err != nil {
 				utils.Throw("")
 			}
+			loc, _ := time.LoadLocation("Asia/Jakarta")
+			chatID := utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).String())
+			data = models.ChattingAdd{
+				Arh:       true,
+				Message:   "Welcome to my Website\n\nAdhitya Rachman H",
+				CreatedAt: time.Now().In(loc),
+				Read:      false,
+				ChatID:    chatID,
+			}
+			client.Collection("visitors").Doc(visitor.Uid).Collection("chat").Doc(chatID).Set(ctx, data)
 			result, _ := client.Collection("visitors").Doc(visitor.Uid).Get(ctx)
 			result.DataTo(&visitor)
 

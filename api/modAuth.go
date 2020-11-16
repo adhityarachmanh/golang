@@ -26,7 +26,7 @@ func (app *AppSchema) editVisitor(c *gin.Context) {
 			visitor.Name = visitorRequest.Name
 			visitor.Uid, _ = app.getToken(c)
 			loc, _ := time.LoadLocation("Asia/Jakarta")
-			chatID := utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).String())
+			chatID := utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).Format(time.RFC3339))
 			client, _ := app.Firebase.Firestore(ctx)
 			_, err := client.Collection("visitors").Doc(visitor.Uid).Update(ctx, []firestore.Update{
 				{
@@ -44,7 +44,7 @@ func (app *AppSchema) editVisitor(c *gin.Context) {
 			_, err = client.Collection("visitors").Doc(visitor.Uid).Collection("chatting").Doc(chatID).Set(ctx, models.ChattingAdd{
 				Arh:       true,
 				Message:   "Welcome to my Website",
-				CreatedAt: time.Now().In(loc).String(),
+				CreatedAt: time.Now().In(loc).Format(time.RFC3339),
 				Read:      false,
 				ChatID:    chatID,
 			})

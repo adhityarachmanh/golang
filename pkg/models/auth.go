@@ -8,7 +8,7 @@ type Chatting struct {
 type ChattingAdd struct {
 	Message   string `json:"msg" firestore:"msg"`
 	Arh       bool   `json:"arh" firestore:"arh"`
-	CreatedAt string `json:"cratedAt" firestore:"cratedAt"`
+	CreatedAt string `json:"createdAt" firestore:"createdAt"`
 	Read      bool   `json:"read" firestore:"read"`
 	ChatID    string `json:"chatID" firestore:"chatID"`
 }
@@ -27,6 +27,6 @@ type Logging struct {
 	IPAddress  string    `json:"ip" firestore:"ip"`
 	MacAddress []string  `json:"macaddress" firestore:"macaddress"`
 	Message    string    `json:"message" firestore:"message"`
-	CreatedAt  time.Time `json:"cratedAt" firestore:"cratedAt"`
+	CreatedAt  time.Time `json:"createdAt" firestore:"createdAt"`
 	UserAgent  string    `json:"useragent" firestore:"useragent"`
 }

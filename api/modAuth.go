@@ -43,7 +43,7 @@ func (app *AppSchema) editVisitor(c *gin.Context) {
 			result, _ := client.Collection("visitors").Doc(visitor.Uid).Get(ctx)
 			_, err = client.Collection("visitors").Doc(visitor.Uid).Collection("chatting").Doc(chatID).Set(ctx, models.ChattingAdd{
 				Arh:       true,
-				Message:   "Welcome to my Website\n\nAdhitya Rachman H",
+				Message:   "Welcome to my Website",
 				CreatedAt: time.Now().In(loc).String(),
 				Read:      false,
 				ChatID:    chatID,

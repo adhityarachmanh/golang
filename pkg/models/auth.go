@@ -6,11 +6,11 @@ type Chatting struct {
 	Message string `json:"msg" firestore:"msg"`
 }
 type ChattingAdd struct {
-	Message   string    `json:"msg" firestore:"msg"`
-	Arh       bool      `json:"arh" firestore:"arh"`
-	CreatedAt time.Time `json:"cratedAt" firestore:"cratedAt"`
-	Read      bool      `json:"read" firestore:"read"`
-	ChatID    string    `json:"chatID" firestore:"chatID"`
+	Message   string `json:"msg" firestore:"msg"`
+	Arh       bool   `json:"arh" firestore:"arh"`
+	CreatedAt string `json:"cratedAt" firestore:"cratedAt"`
+	Read      bool   `json:"read" firestore:"read"`
+	ChatID    string `json:"chatID" firestore:"chatID"`
 }
 
 type Visitor struct {

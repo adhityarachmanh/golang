@@ -55,6 +55,7 @@ func (app *AppSchema) initializeRoutes() {
 	app.modAuth()
 	app.modMusic()
 	app.modProject()
+	app.modContact()
 
 }
 

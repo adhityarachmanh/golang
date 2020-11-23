@@ -11,7 +11,7 @@ import (
 	// "strings"
 )
 
-func (app *AppSchema) modMusic() {
+func (app *AppSchema) user_music() {
 	// app.routeRegister("POST", "music/add", app.addMusic)
 	app.routeRegister("GET", "music", app.getMusic, false)
 }

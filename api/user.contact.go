@@ -10,7 +10,7 @@ import (
 	// "strings"
 )
 
-func (app *AppSchema) modContact() {
+func (app *AppSchema) user_contact() {
 	// app.routeRegister("POST", "music/add", app.addMusic)
 	app.routeRegister("GET", "contact", app.getContact, false)
 }

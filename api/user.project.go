@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (app *AppSchema) modProject() {
+func (app *AppSchema) user_project() {
 	app.routeRegister("GET", "projects", app.getProject, false)
 }
 

@@ -10,11 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (app *AppSchema) modCertificate() {
-	app.routeRegister("GET", "certificate", app.getCertificate, false)
+func (app *AppSchema) user_certificate() {
+	app.routeRegister("GET", "certificate", app.user_certificate_get_certificate, false)
 }
 
-func (app *AppSchema) getCertificate(c *gin.Context) {
+func (app *AppSchema) user_certificate_get_certificate(c *gin.Context) {
 	var data []models.CertificateSchema
 	var d models.CertificateSchema
 	utils.Block{

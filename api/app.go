@@ -50,12 +50,15 @@ func (app *AppSchema) initializeRoutes() {
 	app.Router.LoadHTMLGlob("templates/*.html")
 	app.Router.Static("/static", "static")
 	app.Router.GET("/", app.index)
-	app.modSkill()
-	app.modCertificate()
-	app.modAuth()
-	app.modMusic()
-	app.modProject()
-	app.modContact()
+
+	app.admin_auth()
+
+	app.user_skill()
+	app.user_certificate()
+	app.user_auth()
+	app.user_music()
+	app.user_project()
+	app.user_contact()
 
 }
 

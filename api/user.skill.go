@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (app *AppSchema) modSkill() {
+func (app *AppSchema) user_skill() {
 	app.routeRegister("GET", "skill", app.getSkill, false)
 	// if config.MODE == "DEV" {
 	// 	app.routeRegister("POST", "add-skill", app.addSkill)

@@ -79,7 +79,6 @@ func (app *AppSchema) user_auth_edit_visitor(c *gin.Context) {
 }
 func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 	var visitor models.Visitor
-	var prevVisitor []models.Visitor
 
 	var visitorBanned []models.BannedVisitor
 	var visitorRequest models.VisitorRequest
@@ -90,12 +89,8 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
 			app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: visitor.IPAddress}, &visitorBanned)
 			if len(visitorBanned) != 0 {
-				IPAddress := visitorBanned[0].IPAddress
 				client, _ := app.Firebase.Firestore(ctx)
 				client.Collection("banned").Add(ctx, map[string]string{"ip_address": visitorRequest.IPAddress})
-
-				app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: IPAddress}, &prevVisitor)
-				visitor = prevVisitor[0]
 			}
 			app.firestoreUpdate("visitors", visitor.Uid, []firestore.Update{
 				{

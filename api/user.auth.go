@@ -86,18 +86,21 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 		Try: func() {
 			app.BindRequestJSON(c, &visitorRequest)
 			visitor.Uid, _ = app.getToken(c)
+			newIPAddress := visitorRequest.IPAddress
 			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
-			app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: visitor.IPAddress}, &visitorBanned)
+			oldIPAddress := visitor.IPAddress
+			app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: oldIPAddress}, &visitorBanned)
 			if len(visitorBanned) != 0 {
 				client, _ := app.Firebase.Firestore(ctx)
-				client.Collection("banned").Add(ctx, map[string]string{"ip_address": visitorRequest.IPAddress})
+				visitor.IPAddress = newIPAddress
+				client.Collection("banned").Add(ctx, visitor)
 			}
 			app.firestoreUpdate("visitors", visitor.Uid, []firestore.Update{
 				{
-					Path: "ip_address", Value: visitorRequest.IPAddress,
+					Path: "ip_address", Value: newIPAddress,
 				},
 			})
-			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
+			// app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
 			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		}, Catch: func(e utils.Exception) {

@@ -58,10 +58,21 @@ func (app *AppSchema) routeMiddleware(c *gin.Context) (int, string) {
 		return 1, "Token not found."
 	}
 	Token, Type := app.getToken(c)
-	client, _ := app.Firebase.Firestore(ctx)
-	_, err := client.Collection(Type).Doc(Token).Get(ctx)
-	if err != nil {
-		return 1, "Token not registered."
+
+	if Type == "visitors" {
+		var visitor models.Visitor
+		app.firestoreGetDocument(Type, Token, &visitor)
+
+		if visitor.Uid == "" {
+			return 1, "Token not registered."
+		}
+	} else if Type == "admins" {
+		var admins []models.Admin
+		app.firestoreFilter(Type, Filter{Key: "token", Op: "==", Value: Token}, &admins)
+		if len(admins) == 0 {
+			return 1, "Token not registered."
+		}
 	}
+
 	return 0, ""
 }

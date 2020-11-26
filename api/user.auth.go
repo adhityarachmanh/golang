@@ -6,9 +6,9 @@ import (
 	"arh/pkg/models"
 	"arh/pkg/utils"
 	"cloud.google.com/go/firestore"
-	"fmt"
+	// "fmt"
 	"github.com/gin-gonic/gin"
-	"time"
+	// "time"
 )
 
 func (app *AppSchema) user_auth() {
@@ -25,12 +25,12 @@ func (app *AppSchema) user_auth_edit_visitor(c *gin.Context) {
 		Try: func() {
 			app.BindRequestJSON(c, &visitorRequest)
 			uid, _ := app.getToken(c)
-			loc, _ := time.LoadLocation("Asia/Jakarta")
+			// loc, _ := time.LoadLocation("Asia/Jakarta")
 			// chatID := utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).Format(time.RFC3339))
 			client, _ := app.Firebase.Firestore(ctx)
 			result, _ := client.Collection("visitors").Doc(uid).Get(ctx)
 			result.DataTo(&visitor)
-			_, err := client.Collection("visitors").Doc(uid).Update(ctx, []firestore.Update{
+			app.firestoreUpdate("visitors", uid, []firestore.Update{
 				{
 					Path: "name", Value: visitorRequest.Name,
 				},
@@ -40,32 +40,32 @@ func (app *AppSchema) user_auth_edit_visitor(c *gin.Context) {
 				{
 					Path: "token", Value: visitorRequest.Token,
 				},
+				{
+					Path: "ip_address", Value: visitorRequest.IPAddress,
+				},
 			})
-			if err != nil {
-				utils.Throw("")
-			}
 
-			messageID := fmt.Sprint(time.Now().In(loc).Unix())
-			if !visitor.Chat {
-				_, err = client.Collection("visitors").Doc(uid).Collection("chating").Doc(messageID).Set(ctx, models.ChatingSchema{
-					CostumeProperties: models.CustomeProperties{
-						Uid:       uid,
-						Fullname:  visitor.Name,
-						Read:      false,
-						MessageID: messageID,
-					},
-					User: models.ChatingUser{
-						Uid:       "",
-						Username:  "superadmin",
-						Firstname: "Super",
-						Lastname:  "Admin",
-						Read:      false,
-					},
-					CreatedAt: time.Now().In(loc).Format(time.RFC3339),
-					Text:      "Welcome to my Website",
-					Id:        messageID,
-				})
-			}
+			// messageID := fmt.Sprint(time.Now().In(loc).Unix())
+			// if !visitor.Chat {
+			// 	client.Collection("visitors").Doc(uid).Collection("chating").Doc(messageID).Set(ctx, models.ChatingSchema{
+			// 		CostumeProperties: models.CustomeProperties{
+			// 			Uid:       uid,
+			// 			Fullname:  visitor.Name,
+			// 			Read:      false,
+			// 			MessageID: messageID,
+			// 		},
+			// 		User: models.ChatingUser{
+			// 			Uid:       "",
+			// 			Username:  "superadmin",
+			// 			Firstname: "Super",
+			// 			Lastname:  "Admin",
+			// 			Read:      false,
+			// 		},
+			// 		CreatedAt: time.Now().In(loc).Format(time.RFC3339),
+			// 		Text:      "Welcome to my Website",
+			// 		Id:        messageID,
+			// 	})
+			// }
 
 			result, _ = client.Collection("visitors").Doc(uid).Get(ctx)
 			result.DataTo(&visitor)
@@ -79,9 +79,26 @@ func (app *AppSchema) user_auth_edit_visitor(c *gin.Context) {
 }
 func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 	var visitor models.Visitor
+	var visitorBanned []models.BannedVisitor
+	var visitorRequest models.VisitorRequest
 	utils.Block{
 		Try: func() {
+			app.BindRequestJSON(c, &visitorRequest)
 			visitor.Uid, _ = app.getToken(c)
+			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
+			app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: visitor.IPAddress}, &visitorBanned)
+			if len(visitorBanned) != 0 {
+				visitor.IPAddress = visitorBanned[0].IPAddress
+				client, _ := app.Firebase.Firestore(ctx)
+				client.Collection("banned").Add(ctx, map[string]string{"ip_address": visitor.IPAddress})
+			} else {
+				visitor.IPAddress = visitorRequest.IPAddress
+			}
+			app.firestoreUpdate("visitors", visitor.Uid, []firestore.Update{
+				{
+					Path: "ip_address", Value: visitor.IPAddress,
+				},
+			})
 			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
 			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
@@ -95,20 +112,22 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 func (app *AppSchema) user_auth_login_visitor(c *gin.Context) {
 
 	var visitor models.Visitor
+	var visitorExist []models.Visitor
+
+	var visitorRequest models.VisitorRequest
 	utils.Block{
 		Try: func() {
+			app.BindRequestJSON(c, &visitorRequest)
 			visitor.Uid, _ = app.getToken(c)
 			client, _ := app.Firebase.Firestore(ctx)
+			app.firestoreFilter("visitors", Filter{Key: "ip_address", Op: "==", Value: visitorRequest.IPAddress}, &visitorExist)
+			if len(visitorExist) != 0 {
+				visitor = visitorExist[0]
+			} else {
+				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
 
-			result, _ := client.Collection("visitors").Doc(visitor.Uid).Get(ctx)
-			if result.Data() != nil {
-				utils.Throw("")
+				app.loggingMiddleWare(c, "LOGIN_SUCCESS")
 			}
-			_, err := client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
-			if err != nil {
-				utils.Throw("")
-			}
-			app.loggingMiddleWare(c, "LOGIN_SUCCESS")
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		},
 		Catch: func(e utils.Exception) {

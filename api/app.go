@@ -68,7 +68,7 @@ func (app *AppSchema) BindRequestJSON(c *gin.Context, data interface{}) {
 		c.BindJSON(&binding)
 		d := utils.Ed.BNE(6, 2).Dec(binding.Data)
 		json.Unmarshal([]byte(d), &data)
-	} else {
+	} else if config.MODE == "DEV" {
 		var binding models.RequestSchema
 		c.BindJSON(&binding)
 		byt, _ := json.Marshal(binding.Data)

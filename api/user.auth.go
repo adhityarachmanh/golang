@@ -135,6 +135,8 @@ func (app *AppSchema) user_auth_login_visitor(c *gin.Context) {
 				visitor.IPAddress = visitorRequest.IPAddress
 				client, _ := app.Firebase.Firestore(ctx)
 				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
+				app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
+
 			}
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 

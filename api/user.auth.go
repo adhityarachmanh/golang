@@ -102,7 +102,7 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 			}
 			app.firestoreUpdate("visitors", visitor.Uid, []firestore.Update{
 				{
-					Path: "ip_address", Value: visitorRequest.IPAddress,
+					Path: "ip_address", Value: visitor.IPAddress,
 				},
 			})
 			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")

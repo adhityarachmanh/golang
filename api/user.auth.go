@@ -103,7 +103,7 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 					Path: "ip_address", Value: newIPAddress,
 				},
 			})
-			// app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
+			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
 			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitorRequest})
 		}, Catch: func(e utils.Exception) {

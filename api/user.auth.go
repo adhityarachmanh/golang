@@ -86,8 +86,8 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 	utils.Block{
 		Try: func() {
 			app.BindRequestJSON(c, &visitorRequest)
-			visitor.Uid, _ = app.getToken(c)
-			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
+			uid, _ := app.getToken(c)
+			app.firestoreGetDocument("visitors", uid, &visitor)
 			if visitor.Uid == "" {
 				utils.Throw("")
 			}

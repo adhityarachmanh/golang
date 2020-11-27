@@ -105,7 +105,7 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 			})
 			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
 			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")
-			utils.ResponseAPI(c, models.ResponseSchema{Data: visitorRequest})
+			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		}, Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, "Something Wrong!")
 		},

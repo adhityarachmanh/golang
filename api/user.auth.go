@@ -13,7 +13,7 @@ import (
 
 func (app *AppSchema) user_auth() {
 	app.routeRegister("POST", "auth/login", app.user_auth_login_visitor, false)
-	app.routeRegister("POST", "auth/autologin", app.user_auth_autologin_visitor, true)
+	app.routeRegister("POST", "auth/autologin", app.user_auth_autologin_visitor, false)
 	app.routeRegister("POST", "auth/updatevisitor", app.user_auth_edit_visitor, true)
 
 }
@@ -79,6 +79,7 @@ func (app *AppSchema) user_auth_edit_visitor(c *gin.Context) {
 }
 func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 	var visitor models.Visitor
+	// var findById models.Visitor
 
 	var visitorBanned []models.BannedVisitor
 	var visitorRequest models.VisitorRequest
@@ -86,24 +87,24 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 		Try: func() {
 			app.BindRequestJSON(c, &visitorRequest)
 			visitor.Uid, _ = app.getToken(c)
-			newIPAddress := visitorRequest.IPAddress
 			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
-			oldIPAddress := visitor.IPAddress
-			app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: oldIPAddress}, &visitorBanned)
+			if visitor.Uid == "" {
+				utils.Throw("")
+			}
+			app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: visitor.IPAddress}, &visitorBanned)
 			if len(visitorBanned) != 0 {
+				visitor.IPAddress = visitorRequest.IPAddress
 				client, _ := app.Firebase.Firestore(ctx)
-				visitor.IPAddress = newIPAddress
-				client.Collection("banned").Add(ctx, map[string]string{
+				client.Collection("visitors").Add(ctx, map[string]string{
 					"ip_address": visitor.IPAddress,
 					"uid":        visitor.Uid,
 				})
 			}
 			app.firestoreUpdate("visitors", visitor.Uid, []firestore.Update{
 				{
-					Path: "ip_address", Value: visitor.IPAddress,
+					Path: "ip_address", Value: visitorRequest.IPAddress,
 				},
 			})
-			app.firestoreGetDocument("visitors", visitor.Uid, &visitor)
 			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		}, Catch: func(e utils.Exception) {
@@ -114,7 +115,6 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 }
 
 func (app *AppSchema) user_auth_login_visitor(c *gin.Context) {
-
 	var visitor models.Visitor
 	var visitorExist []models.Visitor
 
@@ -123,20 +123,19 @@ func (app *AppSchema) user_auth_login_visitor(c *gin.Context) {
 		Try: func() {
 			app.BindRequestJSON(c, &visitorRequest)
 			visitor.Uid, _ = app.getToken(c)
-			client, _ := app.Firebase.Firestore(ctx)
 			app.firestoreFilter("visitors", Filter{Key: "ip_address", Op: "==", Value: visitorRequest.IPAddress}, &visitorExist)
 			if len(visitorExist) != 0 {
 				visitor = visitorExist[0]
 			} else {
+				visitor.IPAddress = visitorRequest.IPAddress
+				client, _ := app.Firebase.Firestore(ctx)
 				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
-
-				app.loggingMiddleWare(c, "LOGIN_SUCCESS")
 			}
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
+
 		},
 		Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, "Something Wrong!")
 		},
 	}.Go()
-
 }

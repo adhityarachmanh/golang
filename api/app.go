@@ -71,7 +71,9 @@ func (app *AppSchema) BindRequestJSON(c *gin.Context, data interface{}) {
 	} else if config.MODE == "DEV" {
 		var binding models.RequestSchema
 		c.BindJSON(&binding)
+
 		byt, _ := json.Marshal(binding.Data)
+		fmt.Print(binding.Data)
 		json.Unmarshal(byt, &data)
 	}
 }

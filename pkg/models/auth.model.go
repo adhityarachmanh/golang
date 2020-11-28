@@ -39,4 +39,6 @@ type Admin struct {
 	Name     string `json:"name" firestore:"name"`
 	Username string `json:"username" firestore:"username"`
 	Password string `json:"password" firestore:"password"`
+	Token    string `json:"token" firestore:"token"`
+	Image    string `json:"image" firestore:"image"`
 }

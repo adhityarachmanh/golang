@@ -60,6 +60,7 @@ func (app *AppSchema) admin_auth_login(c *gin.Context) {
 				},
 			})
 			admin.Password = ""
+			admin.Token = NewToken
 			utils.ResponseAPI(c, models.ResponseSchema{Data: admin})
 		},
 		Catch: func(e utils.Exception) {

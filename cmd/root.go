@@ -10,6 +10,7 @@ import (
 	// "strings"
 )
 
+var httpHost string
 var httpPort int
 var filename string
 var filePassword string

@@ -39,16 +39,17 @@ Authorization: Arh eyJ0b2tlbiI6Ijk4OTc0NzViOTczMTQwNTc5OTA3OWQ5NDQ5YjdiYmI1Iiwid
 ###
 POST http://localhost:21500/v1.0/api/auth/autologin HTTP/1.1
 Content-Type: application/json
-Authorization: Arh eyJ0b2tlbiI6IjY0MDNmNmNhOTBkMjQ0N2RhNGMzYjMyMzdlMjAzYmZjIiwidHlwZSI6InZpc2l0b3JzIn0
+Authorization: Arh eyJ0b2tlbiI6ImZhNTRkZDA1OGQ3YzRiYzg4ZjY4YjRlMDcwMjg0MWFlIiwidHlwZSI6InZpc2l0b3JzIn0
 
 {
   "data":{
-    "name": "",
+     "name": "",
     "chat": false,
     "token": "",
-    "ip_address":"122.241.124.124"
+    "ip_address":"321412412421"
   }
 }
+
 
 
 ###
@@ -79,11 +80,10 @@ Authorization: Arh eyJ0b2tlbiI6ImM3NGExOTZmLWYxOWQtNWVhOS1iZmZkLWEyNzQyNDMyZmM5Y
 }
 
 ###
-POST  http://localhost:21500/v1.0/api/admin/auth/autologin HTTP/1.1
+POST   https://adhityarachmanh-cv-api.herokuapp.com/djEuMC9hcGkvYWRtaW4vYXV0aC9sb2dpbg.arh HTTP/1.1
 Content-Type: application/json
-Authorization: Arh eyJ0b2tlbiI6ImM3NGExOTZmLWYxOWQtNWVhOS1iZmZkLWEyNzQyNDMyZmM5YyIsInR5cGUiOiJhZG1pbnMifQ
-
+Authorization: Arh eyJ0b2tlbiI6Ijc2NzkyY2FkOGEzYzQ4NDU4NTZjOGY2Y2I1ZGMwOWJkIiwidHlwZSI6InZpc2l0b3JzIn0
 
 {
-  "data":""
+  "data":"CWjZA0vW@KfRzsi4iKfI?gJYCwfWywnM@wfS?ciQiLbFA1n1@1jIiHMGuLvRqgEVmdmVmcj7"
 }

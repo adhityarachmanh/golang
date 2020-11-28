@@ -80,10 +80,21 @@ Authorization: Arh eyJ0b2tlbiI6ImM3NGExOTZmLWYxOWQtNWVhOS1iZmZkLWEyNzQyNDMyZmM5Y
 }
 
 ###
+<<<<<<< HEAD
 POST   https://adhityarachmanh-cv-api.herokuapp.com/djEuMC9hcGkvYWRtaW4vYXV0aC9sb2dpbg.arh HTTP/1.1
+=======
+POST  http://localhost:21500/v1.0/api/admin/auth/login HTTP/1.1
+>>>>>>> 7f3f4c28531767ead0e7635494005ab44afca3a7
 Content-Type: application/json
 Authorization: Arh eyJ0b2tlbiI6Ijc2NzkyY2FkOGEzYzQ4NDU4NTZjOGY2Y2I1ZGMwOWJkIiwidHlwZSI6InZpc2l0b3JzIn0
 
 {
+<<<<<<< HEAD
   "data":"CWjZA0vW@KfRzsi4iKfI?gJYCwfWywnM@wfS?ciQiLbFA1n1@1jIiHMGuLvRqgEVmdmVmcj7"
+=======
+  "data":{
+    "username":"adhityarachmanh",
+    "password":"Rum@h10310"
+  }
+>>>>>>> 7f3f4c28531767ead0e7635494005ab44afca3a7
 }

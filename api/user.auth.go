@@ -81,7 +81,7 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 	var visitor models.Visitor
 	// var findById models.Visitor
 
-	// var visitorBanned []models.BannedVisitor
+	var visitorBanned []models.BannedVisitor
 	var visitorRequest models.VisitorRequest
 	utils.Block{
 		Try: func() {
@@ -93,21 +93,19 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 				visitor.IPAddress = visitorRequest.IPAddress
 				client, _ := app.Firebase.Firestore(ctx)
 				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
-			} else {
-				// app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: visitor.IPAddress}, &visitorBanned)
-				// if len(visitorBanned) != 0 {
-				// 	visitor.IPAddress = visitorRequest.IPAddress
-				// 	client, _ := app.Firebase.Firestore(ctx)
-				// 	client.Collection("banned").Add(ctx, map[string]string{
-				// 		"ip_address": visitor.IPAddress,
-				// 		"uid":        visitor.Uid,
-				// 	})
-				// }
+			} else if visitor.Uid != "" && visitor.IPAddress != visitorRequest.IPAddress {
 				app.firestoreUpdate("visitors", uid, []firestore.Update{
 					{
 						Path: "ip_address", Value: visitorRequest.IPAddress,
 					},
 				})
+				app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: visitor.IPAddress}, &visitorBanned)
+				if len(visitorBanned) != 0 {
+					client, _ := app.Firebase.Firestore(ctx)
+					client.Collection("banned").Add(ctx, map[string]string{
+						"ip_address": visitorRequest.IPAddress,
+					})
+				}
 			}
 
 			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")

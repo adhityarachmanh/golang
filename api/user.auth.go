@@ -108,7 +108,6 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 
 			if visitor.Uid == "" {
 				visitor.Uid = uid
-				visitor.TimeVisit = time.Now().In(loc).Unix()
 				visitor.IPAddress = visitorRequest.IPAddress
 				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
 			} else if visitor.Uid != "" && visitor.IPAddress != visitorRequest.IPAddress {
@@ -126,14 +125,14 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 						IPAddress:  visitorRequest.IPAddress,
 					})
 				}
-				app.firestoreUpdate("visitors", uid, []firestore.Update{
-					{
-						Path: "time_visit", Value: time.Now().In(loc).Unix(),
-					},
-				})
-				app.firestoreGetDocument("visitors", uid, &visitor)
-			}
 
+			}
+			app.firestoreUpdate("visitors", uid, []firestore.Update{
+				{
+					Path: "time_visit", Value: time.Now().In(loc).Unix(),
+				},
+			})
+			app.firestoreGetDocument("visitors", uid, &visitor)
 			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		}, Catch: func(e utils.Exception) {

@@ -23,6 +23,8 @@ firebase.google.com/go/iid
 firebase.google.com/go/internal
 firebase.google.com/go/messaging
 firebase.google.com/go/storage
+# firebase.google.com/go/v4 v4.1.0
+## explicit
 # github.com/common-nighthawk/go-figure v0.0.0-20200609044655-c4b36f998cf2
 ## explicit
 github.com/common-nighthawk/go-figure

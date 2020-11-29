@@ -53,16 +53,14 @@ Authorization: Arh eyJ0b2tlbiI6ImZhNTRkZDA1OGQ3YzRiYzg4ZjY4YjRlMDcwMjg0MWFlIiwid
 
 
 ###
-POST https://fcm.googleapis.com/fcm/send HTTP/1.1
-Authorization: key=AAAArXzEV5k:APA91bF_zqbLqyE-p_W-ZWRTFXdzlq9Dsq4uOWl9XoqOcDDCqLK2yrTSA6If3DzovLinWAjnHl2tieGdQXLEDXLezbhTSl4mb0dOWzLSw9FmttMtQMKxO5IRESggsFa78JyP3vQOnDQj
+POST http://localhost:21500/v1.0/api/auth/notif HTTP/1.1
 Content-Type: application/json
+Authorization: Arh eyJ0b2tlbiI6IjM1NGNmMDViYTcyYjRjNTViZTMzYjViOGQ3YWVmZTE3IiwidHlwZSI6InZpc2l0b3JzIn0
 
 {
-  "notification": {
-    "title": "Hey there", 
-    "body": "Subscribe to mighty ghost hack youtube channel"
-  },
-  "to" : "e9uzmr2mG6mudqLB2DUukM:APA91bELyIYn-WXg_b1yHMxXkdGndouSnmKHjyXOU6xxZcypvoxgE18p2KXVWXFNei3829NQzDhyZZNrSQURaUyAk27v0K7dRei9CmyLMDRIx761A65b-sauH11pXPhlCW6_gx7GOyfx"
+ "data":{
+   "message":"Hello Admin"
+ }
 }
 
 ###

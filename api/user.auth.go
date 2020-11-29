@@ -8,14 +8,47 @@ import (
 	"cloud.google.com/go/firestore"
 	// "fmt"
 	"github.com/gin-gonic/gin"
-	// "time"
+	"time"
 )
 
 func (app *AppSchema) user_auth() {
 	app.routeRegister("POST", "auth/login", app.user_auth_login_visitor, false)
 	app.routeRegister("POST", "auth/autologin", app.user_auth_autologin_visitor, false)
 	app.routeRegister("POST", "auth/updatevisitor", app.user_auth_edit_visitor, true)
+	app.routeRegister("POST", "auth/notif", app.user_auth_notif, true)
 
+}
+
+func (app *AppSchema) user_auth_notif(c *gin.Context) {
+	var adminList []models.Admin
+	var visitor models.Visitor
+	var fmcRequest models.FCMRequest
+	var status []string
+	utils.Block{
+		Try: func() {
+			uid, _ := app.getToken(c)
+			app.BindRequestJSON(c, &fmcRequest)
+			app.firestoreByCollection("admins", &adminList)
+			app.firestoreGetDocument("visitors", uid, &visitor)
+
+			for i := 0; i < len(adminList); i++ {
+				admin := adminList[i]
+				app.sendNotificationFCM(models.FCM{
+					Notification: models.NotificationSchema{
+						Title: visitor.Name,
+						Body:  fmcRequest.Message,
+					},
+					Data: visitor,
+					To:   admin.NotificationToken,
+				})
+				status = append(status, admin.NotificationToken)
+			}
+			utils.ResponseAPI(c, models.ResponseSchema{Data: status})
+
+		}, Catch: func(e utils.Exception) {
+			utils.ResponseAPIError(c, "Something Wrong!")
+		},
+	}.Go()
 }
 
 func (app *AppSchema) user_auth_edit_visitor(c *gin.Context) {
@@ -27,9 +60,7 @@ func (app *AppSchema) user_auth_edit_visitor(c *gin.Context) {
 			uid, _ := app.getToken(c)
 			// loc, _ := time.LoadLocation("Asia/Jakarta")
 			// chatID := utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).Format(time.RFC3339))
-			client, _ := app.Firebase.Firestore(ctx)
-			result, _ := client.Collection("visitors").Doc(uid).Get(ctx)
-			result.DataTo(&visitor)
+			app.firestoreGetDocument("visitors", uid, &visitor)
 			app.firestoreUpdate("visitors", uid, []firestore.Update{
 				{
 					Path: "name", Value: visitorRequest.Name,
@@ -45,30 +76,7 @@ func (app *AppSchema) user_auth_edit_visitor(c *gin.Context) {
 				},
 			})
 
-			// messageID := fmt.Sprint(time.Now().In(loc).Unix())
-			// if !visitor.Chat {
-			// 	client.Collection("visitors").Doc(uid).Collection("chating").Doc(messageID).Set(ctx, models.ChatingSchema{
-			// 		CostumeProperties: models.CustomeProperties{
-			// 			Uid:       uid,
-			// 			Fullname:  visitor.Name,
-			// 			Read:      false,
-			// 			MessageID: messageID,
-			// 		},
-			// 		User: models.ChatingUser{
-			// 			Uid:       "",
-			// 			Username:  "superadmin",
-			// 			Firstname: "Super",
-			// 			Lastname:  "Admin",
-			// 			Read:      false,
-			// 		},
-			// 		CreatedAt: time.Now().In(loc).Format(time.RFC3339),
-			// 		Text:      "Welcome to my Website",
-			// 		Id:        messageID,
-			// 	})
-			// }
-
-			result, _ = client.Collection("visitors").Doc(uid).Get(ctx)
-			result.DataTo(&visitor)
+			app.firestoreGetDocument("visitors", uid, &visitor)
 
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})
 		}, Catch: func(e utils.Exception) {
@@ -86,12 +94,13 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 	utils.Block{
 		Try: func() {
 			app.BindRequestJSON(c, &visitorRequest)
+			client, _ := app.Firebase.Firestore(ctx)
 			uid, _ := app.getToken(c)
+			loc, _ := time.LoadLocation("Asia/Jakarta")
 			app.firestoreGetDocument("visitors", uid, &visitor)
 			if visitor.Uid == "" {
 				visitor.Uid = uid
 				visitor.IPAddress = visitorRequest.IPAddress
-				client, _ := app.Firebase.Firestore(ctx)
 				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
 			} else if visitor.Uid != "" && visitor.IPAddress != visitorRequest.IPAddress {
 				app.firestoreUpdate("visitors", uid, []firestore.Update{
@@ -101,10 +110,11 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 				})
 				app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: visitor.IPAddress}, &visitorBanned)
 				if len(visitorBanned) != 0 {
-					client, _ := app.Firebase.Firestore(ctx)
-					client.Collection("banned").Add(ctx, map[string]string{
-						"uid":        uid,
-						"ip_address": visitorRequest.IPAddress,
+					documentID := time.Now().In(loc).String()
+					client.Collection("banned").Doc(documentID).Set(ctx, models.BannedVisitor{
+						DocumentID: documentID,
+						Uid:        uid,
+						IPAddress:  visitorRequest.IPAddress,
 					})
 				}
 				app.firestoreGetDocument("visitors", uid, &visitor)
@@ -127,13 +137,13 @@ func (app *AppSchema) user_auth_login_visitor(c *gin.Context) {
 	utils.Block{
 		Try: func() {
 			app.BindRequestJSON(c, &visitorRequest)
+			client, _ := app.Firebase.Firestore(ctx)
 			visitor.Uid, _ = app.getToken(c)
 			app.firestoreFilter("visitors", Filter{Key: "ip_address", Op: "==", Value: visitorRequest.IPAddress}, &visitorExist)
 			if len(visitorExist) != 0 {
 				visitor = visitorExist[0]
 			} else {
 				visitor.IPAddress = visitorRequest.IPAddress
-				client, _ := app.Firebase.Firestore(ctx)
 				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
 			}
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})

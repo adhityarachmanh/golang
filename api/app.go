@@ -9,13 +9,17 @@ import (
 	"context"
 	"encoding/json"
 	firebase "firebase.google.com/go"
+	// fb "firebase.google.com/go/v4/internal"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/cors"
+	// FCM "google.golang.org/api/fcm/v1"
 	"google.golang.org/api/option"
+	// "google.golang.org/api/transport"
+	"bytes"
 	"log"
 	"net/http"
-	// "time"
+	"time"
 )
 
 var ctx = context.Background()
@@ -23,10 +27,12 @@ var ctx = context.Background()
 type AppSchema struct {
 	Router   *gin.Engine
 	Firebase *firebase.App
+	// FCM      *FCM.Service
 }
 
 func (app *AppSchema) Initialize() {
 	app.initializeFirebase()
+	// app.initializeFCM()
 	app.initializeRoutes()
 }
 
@@ -43,6 +49,13 @@ func (app *AppSchema) initializeFirebase() {
 	app.Firebase = Conn
 }
 
+// func (app *AppSchema) initializeFCM() {
+// 	var fcmTokenKey string
+// 	utils.GetDecData("fcm", "", &fcmTokenKey)
+// 	fcmService, _ := FCM.NewService(ctx, option.WithAPIKey(fcmTokenKey))
+// 	app.FCM = fcmService
+// }
+
 func (app *AppSchema) initializeRoutes() {
 	// merge semua route
 	app.Router = gin.Default()
@@ -52,6 +65,7 @@ func (app *AppSchema) initializeRoutes() {
 	app.Router.GET("/", app.index)
 
 	app.admin_auth()
+	app.admin_user()
 
 	app.user_skill()
 	app.user_certificate()
@@ -94,6 +108,38 @@ func (app *AppSchema) routeRegister(method string, url string, handler gin.Handl
 			},
 		}.Go()
 	})
+}
+
+func (app *AppSchema) sendNotificationFCM(fcmData models.FCM) int {
+	var FCMKey models.FCMKey
+	utils.GetDecData("fcm", "", &FCMKey)
+	requestBody, _ := json.Marshal(fcmData)
+	client := http.Client{
+		Timeout: 15 * time.Second,
+	}
+	request, err := http.NewRequest("POST", "https://fcm.googleapis.com/fcm/send", bytes.NewBuffer(requestBody))
+	if err != nil {
+		return 1
+	}
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", "key="+FCMKey.Key)
+
+	resp, err := client.Do(request)
+	if err != nil {
+		return 1
+	}
+	var result models.FCMResponse
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	// defer resp.Body.Close()
+	if result.Success > 0 {
+		return 0
+	} else if result.Failure > 0 {
+		return 1
+	} else {
+		return 1
+	}
+
 }
 
 func (app *AppSchema) Run(addr string) {

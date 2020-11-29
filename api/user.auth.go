@@ -106,6 +106,7 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 						"ip_address": visitorRequest.IPAddress,
 					})
 				}
+				app.firestoreGetDocument("visitors", uid, &visitor)
 			}
 
 			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")

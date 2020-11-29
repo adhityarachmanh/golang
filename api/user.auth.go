@@ -103,6 +103,7 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 				if len(visitorBanned) != 0 {
 					client, _ := app.Firebase.Firestore(ctx)
 					client.Collection("banned").Add(ctx, map[string]string{
+						"uid":        uid,
 						"ip_address": visitorRequest.IPAddress,
 					})
 				}

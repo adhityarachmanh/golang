@@ -37,7 +37,7 @@ func (app *AppSchema) user_auth_notif(c *gin.Context) {
 					Notification: models.NotificationSchema{
 						Title:       visitor.Name,
 						Body:        fmcRequest.Message,
-						ClickAction: "FLUTTER_NOTIFICATION_CLICK",
+						ClickAction: "ARH_NOTIF_CLICK",
 					},
 					Data: visitor,
 					To:   admin.NotificationToken,

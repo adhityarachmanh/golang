@@ -129,7 +129,7 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 			}
 			app.firestoreUpdate("visitors", uid, []firestore.Update{
 				{
-					Path: "time_visit", Value: time.Now().In(loc).Format(time.RFC850),
+					Path: "time_visit", Value: time.Now().In(loc).Format(time.RFC3339),
 				},
 			})
 			app.firestoreGetDocument("visitors", uid, &visitor)
@@ -158,7 +158,7 @@ func (app *AppSchema) user_auth_login_visitor(c *gin.Context) {
 				visitor = visitorExist[0]
 			} else {
 				visitor.IPAddress = visitorRequest.IPAddress
-				visitor.TimeVisit = time.Now().In(loc).Format(time.RFC850)
+				visitor.TimeVisit = time.Now().In(loc).Format(time.RFC3339)
 				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
 			}
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})

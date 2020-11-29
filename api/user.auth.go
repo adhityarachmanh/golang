@@ -26,6 +26,8 @@ func (app *AppSchema) user_auth_notif(c *gin.Context) {
 	var status []string
 	utils.Block{
 		Try: func() {
+			loc, _ := time.LoadLocation("Asia/Jakarta")
+			notificationID := utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).String())
 			uid, _ := app.getToken(c)
 			app.BindRequestJSON(c, &fmcRequest)
 			app.firestoreByCollection("admins", &adminList)
@@ -39,8 +41,12 @@ func (app *AppSchema) user_auth_notif(c *gin.Context) {
 						Body:        fmcRequest.Message,
 						ClickAction: "FLUTTER_NOTIFICATION_CLICK",
 					},
-					Data: visitor,
-					To:   admin.NotificationToken,
+					Data: map[string]string{
+						"notificationID": notificationID,
+						"uid":            visitor.Uid,
+						"name":           visitor.Name,
+					},
+					To: admin.NotificationToken,
 				})
 				status = append(status, admin.NotificationToken)
 			}

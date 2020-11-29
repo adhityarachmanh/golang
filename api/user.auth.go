@@ -105,7 +105,7 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 				// }
 				app.firestoreUpdate("visitors", uid, []firestore.Update{
 					{
-						Path: "ip_address", Value: visitor.IPAddress,
+						Path: "ip_address", Value: visitorRequest.IPAddress,
 					},
 				})
 			}

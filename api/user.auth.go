@@ -35,8 +35,9 @@ func (app *AppSchema) user_auth_notif(c *gin.Context) {
 				admin := adminList[i]
 				app.sendNotificationFCM(models.FCM{
 					Notification: models.NotificationSchema{
-						Title: visitor.Name,
-						Body:  fmcRequest.Message,
+						Title:       visitor.Name,
+						Body:        fmcRequest.Message,
+						ClickAction: "FLUTTER_NOTIFICATION_CLICK",
 					},
 					Data: visitor,
 					To:   admin.NotificationToken,

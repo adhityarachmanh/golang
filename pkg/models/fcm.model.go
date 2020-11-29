@@ -14,8 +14,9 @@ type FCMRequest struct {
 }
 
 type NotificationSchema struct {
-	Title string `json:"title"`
-	Body  string `json:"body"`
+	Title       string `json:"title"`
+	Body        string `json:"body"`
+	ClickAction string `json:"click_action"`
 }
 
 type FCMResponse struct {

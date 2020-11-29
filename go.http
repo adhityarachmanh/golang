@@ -53,14 +53,21 @@ Authorization: Arh eyJ0b2tlbiI6ImZhNTRkZDA1OGQ3YzRiYzg4ZjY4YjRlMDcwMjg0MWFlIiwid
 
 
 ###
-POST http://localhost:21500/v1.0/api/auth/notif HTTP/1.1
+POST https://fcm.googleapis.com/fcm/send HTTP/1.1
+Authorization: key=AAAArXzEV5k:APA91bF_zqbLqyE-p_W-ZWRTFXdzlq9Dsq4uOWl9XoqOcDDCqLK2yrTSA6If3DzovLinWAjnHl2tieGdQXLEDXLezbhTSl4mb0dOWzLSw9FmttMtQMKxO5IRESggsFa78JyP3vQOnDQj
 Content-Type: application/json
-Authorization: Arh eyJ0b2tlbiI6IjM1NGNmMDViYTcyYjRjNTViZTMzYjViOGQ3YWVmZTE3IiwidHlwZSI6InZpc2l0b3JzIn0
 
 {
- "data":{
-   "message":"Hello Admin"
- }
+  "notification": {
+    "click_action": "FLUTTER_NOTIFICATION_CLICK",
+    "title": "Hey there", 
+    "body": "Subscribe to mighty ghost hack youtube channel"
+  },
+  "data":{
+    "uid":"354cf05ba72b4c55be33b5b8d7aefe17",
+    "name":"Adhitya rachman"
+  },
+  "to" : "dklqm_XtS_W0V9xSJCAw9h:APA91bHCScH2_75J0DJbc22kF5DrEXPOKU78XXNq941-IWuUR3g9ZhyD3u7rob1-yOlW4dBNfTHLFijNkIR8X19GyWJI_jhZKF-ujr3NMl-xrwVleWnxKrl8ttLcLhqv3fG72HPlRAlY"
 }
 
 ###

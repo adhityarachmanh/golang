@@ -105,8 +105,10 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 			uid, _ := app.getToken(c)
 			loc, _ := time.LoadLocation("Asia/Jakarta")
 			app.firestoreGetDocument("visitors", uid, &visitor)
+
 			if visitor.Uid == "" {
 				visitor.Uid = uid
+				visitor.TimeVisit = time.Now().In(loc).Unix()
 				visitor.IPAddress = visitorRequest.IPAddress
 				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
 			} else if visitor.Uid != "" && visitor.IPAddress != visitorRequest.IPAddress {
@@ -124,6 +126,11 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 						IPAddress:  visitorRequest.IPAddress,
 					})
 				}
+				app.firestoreUpdate("visitors", uid, []firestore.Update{
+					{
+						Path: "time_visit", Value: time.Now().In(loc).Unix(),
+					},
+				})
 				app.firestoreGetDocument("visitors", uid, &visitor)
 			}
 
@@ -145,12 +152,14 @@ func (app *AppSchema) user_auth_login_visitor(c *gin.Context) {
 		Try: func() {
 			app.BindRequestJSON(c, &visitorRequest)
 			client, _ := app.Firebase.Firestore(ctx)
+			loc, _ := time.LoadLocation("Asia/Jakarta")
 			visitor.Uid, _ = app.getToken(c)
 			app.firestoreFilter("visitors", Filter{Key: "ip_address", Op: "==", Value: visitorRequest.IPAddress}, &visitorExist)
 			if len(visitorExist) != 0 {
 				visitor = visitorExist[0]
 			} else {
 				visitor.IPAddress = visitorRequest.IPAddress
+				visitor.TimeVisit = time.Now().In(loc).Unix()
 				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
 			}
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})

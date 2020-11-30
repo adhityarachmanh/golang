@@ -168,14 +168,16 @@ func (app *AppSchema) user_auth_login_visitor(c *gin.Context) {
 			app.BindRequestJSON(c, &visitorRequest)
 			client, _ := app.Firebase.Firestore(ctx)
 			loc, _ := time.LoadLocation("Asia/Jakarta")
-			visitor.Uid, _ = app.getToken(c)
+			uid, _ := app.getToken(c)
 			app.firestoreFilter("visitors", Filter{Key: "ip_address", Op: "==", Value: visitorRequest.IPAddress}, &visitorExist)
 			if len(visitorExist) != 0 {
-				visitor = visitorExist[0]
+				app.firestoreGetDocument("visitors", visitorExist[0].Uid, &visitor)
 			} else {
+				visitor.Uid = uid
 				visitor.IPAddress = visitorRequest.IPAddress
 				visitor.TimeVisit = time.Now().In(loc).Format(time.RFC3339)
-				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
+				client.Collection("visitors").Doc(uid).Set(ctx, visitor)
+				app.firestoreGetDocument("visitors", uid, &visitor)
 				app.sendNotifToAdmin(models.FCMRequest{
 					Title: "New Visitor",
 					Body:  "IP Address : " + visitor.IPAddress,

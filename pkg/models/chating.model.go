@@ -1,24 +1,31 @@
 package models
 
 type ChatingSchema struct {
-	Id                string            `json:"id" firestore:"id"`
-	Text              string            `json:"text" firestore:"text"`
-	User              ChatingUser       `json:"user" firestore:"user"`
-	CostumeProperties CustomeProperties `json:"customProperties" firestore:"customProperties"`
-	CreatedAt         string            `json:"createdAt" firestore:"createdAt"`
+	Id               string                 `json:"id" firestore:"id"`
+	Text             string                 `json:"text" firestore:"text"`
+	CreatedAt        int                    `json:"createdAt" firestore:"createdAt"`
+	CustomProperties map[string]interface{} `json:"customProperties" firestore:"customProperties"`
+	User             ChatingUserSchema      `json:"user" firestore:"user"`
+	Image            string                 `json:"image" firestore:"image"`
+	Video            string                 `json:"video" firestore:"video"`
 }
 
-type ChatingUser struct {
-	Firstname string `json:"firstName" firestore:"firstName"`
-	Lastname  string `json:"lastName" firestore:"lastName"`
-	Username  string `json:"name" firestore:"name"`
-	Uid       string `json:"uid" firestore:"uid"`
-	Read      bool   `json:"read" firestore:"read"`
+type ChatingUserSchema struct {
+	Avatar           string                 `json:"avatar" firestore:"avatar"`
+	Color            int                    `json:"color" firestore:"color"`
+	ContainerColor   int                    `json:"containerColor" firestore:"containerColor"`
+	CustomProperties CustomPropertiesSchema `json:"customProperties" firestore:"customProperties"`
+	FirstName        string                 `json:"firstName" firestore:"firstName"`
+	LastName         string                 `json:"lastName" firestore:"lastName"`
+	Name             string                 `json:"name" firestore:"name"`
+	Uid              string                 `json:"uid" firestore:"uid"`
 }
 
-type CustomeProperties struct {
-	Fullname  string `json:"name" firestore:"name"`
-	Read      bool   `json:"read" firestore:"read"`
-	Uid       string `json:"uid" firestore:"uid"`
-	MessageID string `json:"message_id" firestore:"message_id"`
+type CustomPropertiesSchema struct {
+	Read bool `json:"read" firestore:"read"`
+}
+
+type ActiveChat struct {
+	Name string `json:"name" firestore:"name"`
+	Time int    `json:"time" firestore:"time"`
 }

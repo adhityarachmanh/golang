@@ -12,6 +12,7 @@ import (
 	"github.com/common-nighthawk/go-figure"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"math/rand"
 	"net"
 	"os"
@@ -201,4 +202,8 @@ func ExternalIP() (string, error) {
 		}
 	}
 	return "", errors.New("")
+}
+
+func UUID() string {
+	return fmt.Sprint(uuid.New())
 }

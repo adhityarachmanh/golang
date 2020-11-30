@@ -76,6 +76,28 @@ func (app *AppSchema) initializeRoutes() {
 
 }
 
+func (app *AppSchema) sendNotifToAdmin(fmcRequest models.FCMRequest) []int {
+	var adminList []models.Admin
+	var status []int
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	app.firestoreByCollection("admins", &adminList)
+	for i := 0; i < len(adminList); i++ {
+		fmcRequest.Data["notificationID"] = utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).String())
+		admin := adminList[i]
+		stat := app.sendNotificationFCM(models.FCM{
+			Notification: models.NotificationSchema{
+				Title:       fmcRequest.Title,
+				Body:        fmcRequest.Body,
+				ClickAction: "FLUTTER_NOTIFICATION_CLICK",
+			},
+			Data: fmcRequest.Data,
+			To:   admin.NotificationToken,
+		})
+		status = append(status, stat)
+	}
+	return status
+}
+
 func (app *AppSchema) BindRequestJSON(c *gin.Context, data interface{}) {
 	if config.MODE == "PROD" {
 		var binding models.RequestProdSchema

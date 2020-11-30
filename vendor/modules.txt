@@ -23,6 +23,8 @@ firebase.google.com/go/iid
 firebase.google.com/go/internal
 firebase.google.com/go/messaging
 firebase.google.com/go/storage
+# firebase.google.com/go/v4 v4.1.0
+## explicit
 # github.com/common-nighthawk/go-figure v0.0.0-20200609044655-c4b36f998cf2
 ## explicit
 github.com/common-nighthawk/go-figure
@@ -71,6 +73,7 @@ github.com/google/go-cmp/cmp/internal/function
 github.com/google/go-cmp/cmp/internal/value
 # github.com/google/uuid v1.1.2
 ## explicit
+github.com/google/uuid
 # github.com/googleapis/gax-go v1.0.3
 ## explicit
 # github.com/googleapis/gax-go/v2 v2.0.5

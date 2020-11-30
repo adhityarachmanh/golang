@@ -3,7 +3,9 @@ package models
 import "time"
 
 type BannedVisitor struct {
-	IPAddress string `json:"ip_address" firestore:"ip_address"`
+	DocumentID string `json:"document_id" firestore:"document_id"`
+	Uid        string `json:"uid" firestore:"uid"`
+	IPAddress  string `json:"ip_address" firestore:"ip_address"`
 }
 
 type Visitor struct {
@@ -12,12 +14,15 @@ type Visitor struct {
 	Chat      bool   `json:"chat" firestore:"chat"`
 	Token     string `json:"token" firestore:"token"`
 	IPAddress string `json:"ip_address" firestore:"ip_address"`
+	TimeVisit string `json:"time_visit" firestore:"time_visit"`
 }
 type VisitorRequest struct {
+	Uid       string `json:"uid" firestore:"uid"`
 	Name      string `json:"name" firestore:"name"`
 	Chat      bool   `json:"chat" firestore:"chat"`
 	Token     string `json:"token" firestore:"token"`
 	IPAddress string `json:"ip_address" firestore:"ip_address"`
+	Banned    bool   `json:"banned" firestore:"banned"`
 }
 
 type Logging struct {
@@ -30,13 +35,17 @@ type Logging struct {
 }
 
 type AdminRequest struct {
-	Username string `json:"username" firestore:"username"`
-	Password string `json:"password" firestore:"password"`
+	Username          string `json:"username" firestore:"username"`
+	Password          string `json:"password" firestore:"password"`
+	NotificationToken string `json:"notificationToken" firestore:"notificationToken"`
 }
 
 type Admin struct {
-	Uid      string `json:"uid" firestore:"uid"`
-	Name     string `json:"name" firestore:"name"`
-	Username string `json:"username" firestore:"username"`
-	Password string `json:"password" firestore:"password"`
+	Uid               string `json:"uid" firestore:"uid"`
+	Name              string `json:"name" firestore:"name"`
+	Username          string `json:"username" firestore:"username"`
+	Password          string `json:"password" firestore:"password"`
+	Token             string `json:"token" firestore:"token"`
+	Image             string `json:"image" firestore:"image"`
+	NotificationToken string `json:"notificationToken" firestore:"notificationToken"`
 }

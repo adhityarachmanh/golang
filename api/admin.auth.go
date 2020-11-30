@@ -21,10 +21,18 @@ func (app *AppSchema) admin_auto_login(c *gin.Context) {
 
 	utils.Block{
 		Try: func() {
+
 			app.BindRequestJSON(c, &adminRequest)
 			Token, Type := app.getToken(c)
 			app.firestoreFilter(Type, Filter{Key: "token", Op: "==", Value: Token}, &adminExists)
 			admin = adminExists[0]
+			if admin.NotificationToken != adminRequest.NotificationToken {
+				app.firestoreUpdate(Type, admin.Uid, []firestore.Update{
+					{
+						Path: "notificationToken", Value: adminRequest.NotificationToken,
+					},
+				})
+			}
 			admin.Password = ""
 			utils.ResponseAPI(c, models.ResponseSchema{Data: admin})
 		},
@@ -58,8 +66,12 @@ func (app *AppSchema) admin_auth_login(c *gin.Context) {
 				{
 					Path: "token", Value: NewToken,
 				},
+				{
+					Path: "notificationToken", Value: adminRequest.NotificationToken,
+				},
 			})
 			admin.Password = ""
+			admin.Token = NewToken
 			utils.ResponseAPI(c, models.ResponseSchema{Data: admin})
 		},
 		Catch: func(e utils.Exception) {

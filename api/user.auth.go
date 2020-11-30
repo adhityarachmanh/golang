@@ -68,8 +68,8 @@ func (app *AppSchema) user_auth_notif(c *gin.Context) {
 	utils.Block{
 		Try: func() {
 			app.BindRequestJSON(c, &fmcRequest)
-			app.sendNotifToAdmin(fmcRequest)
-			utils.ResponseAPI(c, models.ResponseSchema{Data: nil})
+			status := app.sendNotifToAdmin(fmcRequest)
+			utils.ResponseAPI(c, models.ResponseSchema{Data: status})
 
 		}, Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, "Something Wrong!")

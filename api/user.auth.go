@@ -108,6 +108,7 @@ func (app *AppSchema) user_auth_edit_visitor(c *gin.Context) {
 func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 	var visitor models.Visitor
 	// var findById models.Visitor
+	var visitorExist []models.Visitor
 
 	var visitorBanned []models.BannedVisitor
 	var visitorRequest models.VisitorRequest
@@ -120,9 +121,14 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 			app.firestoreGetDocument("visitors", uid, &visitor)
 
 			if visitor.Uid == "" {
-				visitor.Uid = uid
-				visitor.IPAddress = visitorRequest.IPAddress
-				client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
+				app.firestoreFilter("visitors", Filter{Key: "ip_address", Op: "==", Value: visitorRequest.IPAddress}, &visitorExist)
+				if len(visitorExist) != 0 {
+					uid = visitorExist[0].Uid
+				} else {
+					visitor.Uid = uid
+					visitor.IPAddress = visitorRequest.IPAddress
+					client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
+				}
 			} else if visitor.Uid != "" && visitor.IPAddress != visitorRequest.IPAddress {
 				app.firestoreUpdate("visitors", uid, []firestore.Update{
 					{
@@ -139,12 +145,12 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 					})
 				}
 
+				app.firestoreUpdate("visitors", uid, []firestore.Update{
+					{
+						Path: "time_visit", Value: time.Now().In(loc).Format(time.RFC3339),
+					},
+				})
 			}
-			app.firestoreUpdate("visitors", uid, []firestore.Update{
-				{
-					Path: "time_visit", Value: time.Now().In(loc).Format(time.RFC3339),
-				},
-			})
 			app.firestoreGetDocument("visitors", uid, &visitor)
 			// app.loggingMiddleWare(c, "AUTOLOGIN_SUCCESS")
 			utils.ResponseAPI(c, models.ResponseSchema{Data: visitor})

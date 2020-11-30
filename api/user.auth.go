@@ -44,7 +44,6 @@ func (app *AppSchema) user_auth_chat_active(c *gin.Context) {
 				CreatedAt:        chatRequest.Time,
 				CustomProperties: map[string]interface{}{},
 				User: models.ChatingUserSchema{
-					Avatar:         "",
 					Color:          4294967295,
 					ContainerColor: 4279858655,
 					CustomProperties: models.CustomPropertiesSchema{
@@ -53,10 +52,7 @@ func (app *AppSchema) user_auth_chat_active(c *gin.Context) {
 					FirstName: "Super",
 					LastName:  "Admin",
 					Name:      "superadmin",
-					Uid:       "",
 				},
-				Image: "",
-				Video: "",
 			})
 
 			app.firestoreGetDocument("visitors", uid, &visitor)

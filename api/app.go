@@ -76,33 +76,24 @@ func (app *AppSchema) initializeRoutes() {
 
 }
 
-func (app *AppSchema) sendNotifToAdmin(fmcRequest models.FCMRequest) int {
+func (app *AppSchema) sendNotifToAdmin(fmcRequest models.FCMRequest) {
 	var adminList []models.Admin
-	var status int
-	utils.Block{
-		Try: func() {
-			loc, _ := time.LoadLocation("Asia/Jakarta")
-			app.firestoreByCollection("admins", &adminList)
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	app.firestoreByCollection("admins", &adminList)
 
-			for i := 0; i < len(adminList); i++ {
-				fmcRequest.Data["notificationID"] = utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).String())
-				admin := adminList[i]
-				app.sendNotificationFCM(models.FCM{
-					Notification: models.NotificationSchema{
-						Title:       fmcRequest.Title,
-						Body:        fmcRequest.Body,
-						ClickAction: "FLUTTER_NOTIFICATION_CLICK",
-					},
-					Data: fmcRequest.Data,
-					To:   admin.NotificationToken,
-				})
-			}
-			status = 0
-		}, Catch: func(e utils.Exception) {
-			status = 1
-		},
-	}.Go()
-	return status
+	for i := 0; i < len(adminList); i++ {
+		fmcRequest.Data["notificationID"] = utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).String())
+		admin := adminList[i]
+		app.sendNotificationFCM(models.FCM{
+			Notification: models.NotificationSchema{
+				Title:       fmcRequest.Title,
+				Body:        fmcRequest.Body,
+				ClickAction: "FLUTTER_NOTIFICATION_CLICK",
+			},
+			Data: fmcRequest.Data,
+			To:   admin.NotificationToken,
+		})
+	}
 }
 
 func (app *AppSchema) BindRequestJSON(c *gin.Context, data interface{}) {

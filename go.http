@@ -1,95 +1,14 @@
-
-###
-POST http://localhost:21500/v1.0/api/auth/login HTTP/1.1
-Content-Type: application/json
-Authorization: b8a820289e6848b6b8ee970fa45abbeb
-
-{
-  "asfas":"fasfas"
-}
-
-###
-GET http://localhost:21500/v1.0/api/certificate HTTP/1.1
-Content-Type: application/json
-Authorization:Arh 521b1893a90e4c1987dc8d20d9e4ba63
-
-###
-POST  https://arh-cv-api.herokuapp.com/djEuMC9hcGkvc2tpbGw.arh HTTP/1.1
-Content-Type: application/json
-
-###
-POST http://localhost:21500/v1.0/api/auth/updateVisitor HTTP/1.1
-Content-Type: application/json
-Authorization: Arh 1672ba708c284dd6b04398feefee9dbd
-
-{
-   "data":"CWjSywZJiHMGqwrM?xr3ysbsywnM@wfSieEGDq",
-   "creator": "Adhitya Rachman H"
-}
-
-###
-
-GET  http://localhost:21500/v1.0/api/music  HTTP/1.1
-Authorization: Arh eyJ0b2tlbiI6Ijk4OTc0NzViOTczMTQwNTc5OTA3OWQ5NDQ5YjdiYmI1IiwidHlwZSI6InZpc2l0b3JzIn0
-###
-
-GET  http://localhost:21500/v1.0/api/projects  HTTP/1.1
-Authorization: Arh eyJ0b2tlbiI6Ijk4OTc0NzViOTczMTQwNTc5OTA3OWQ5NDQ5YjdiYmI1IiwidHlwZSI6InZpc2l0b3JzIn0
-
-###
-POST http://localhost:21500/v1.0/api/auth/autologin HTTP/1.1
+POST http://localhost:21500/v1.0/api/auth/notif HTTP/1.1
 Content-Type: application/json
 Authorization: Arh eyJ0b2tlbiI6ImZhNTRkZDA1OGQ3YzRiYzg4ZjY4YjRlMDcwMjg0MWFlIiwidHlwZSI6InZpc2l0b3JzIn0
 
 {
   "data":{
-     "name": "",
-    "chat": false,
-    "token": "",
-    "ip_address":"321412412421"
+    "title":"Test",
+    "body":"adhit",
+    "data":{
+      "uid":"fa54dd058d7c4bc88f68b4e0702841ae",
+      "type":"NOTIFICATION_VISITOR"
+    }
   }
-}
-
-
-
-###
-POST https://fcm.googleapis.com/fcm/send HTTP/1.1
-Authorization: key=AAAArXzEV5k:APA91bF_zqbLqyE-p_W-ZWRTFXdzlq9Dsq4uOWl9XoqOcDDCqLK2yrTSA6If3DzovLinWAjnHl2tieGdQXLEDXLezbhTSl4mb0dOWzLSw9FmttMtQMKxO5IRESggsFa78JyP3vQOnDQj
-Content-Type: application/json
-
-{
-  "notification": {
-    "click_action": "FLUTTER_NOTIFICATION_CLICK",
-    "title": "Hey there", 
-    "body": "Subscribe to mighty ghost hack youtube channel"
-  },
-  "data":{
-    "uid":"354cf05ba72b4c55be33b5b8d7aefe17",
-    "name":"Adhitya rachman"
-  },
-  "to" : "dklqm_XtS_W0V9xSJCAw9h:APA91bHCScH2_75J0DJbc22kF5DrEXPOKU78XXNq941-IWuUR3g9ZhyD3u7rob1-yOlW4dBNfTHLFijNkIR8X19GyWJI_jhZKF-ujr3NMl-xrwVleWnxKrl8ttLcLhqv3fG72HPlRAlY"
-}
-
-###
-POST  https://adhityarachmanh-cv-api.herokuapp.com/djEuMC9hcGkvYWRtaW4vYXV0aC9sb2dpbg.arh HTTP/1.1
-Content-Type: application/json
-Authorization: Arh eyJ0b2tlbiI6ImM3NGExOTZmLWYxOWQtNWVhOS1iZmZkLWEyNzQyNDMyZmM5YyIsInR5cGUiOiJhZG1pbnMifQ
-
-{
-  "data":{
-    "username":"adhityarachmanh",
-    "password":"Rum@h10310"
-  },
-  "creator":"Adhitya Rachman H"
-
-}
-
-###
-POST https://adhityarachmanh-cv-api.herokuapp.com/djEuMC9hcGkvYWRtaW4vYXV0aC9sb2dpbg.arh HTTP/1.1
-Content-Type: application/json
-# Authorization: Arh eyJ0b2tlbiI6Ijc2NzkyY2FkOGEzYzQ4NDU4NTZjOGY2Y2I1ZGMwOWJkIiwidHlwZSI6InZpc2l0b3JzIn0
-
-{
-  "data":"CWjZA0vW@KfRzsi4iKfI?gJYCwfWywnM@wfS?ciQiLbFA1n1@1jIiHMGuLvRqgEVmdmVmcj7",
-  "creator":"Adhitya Rachman H"
 }

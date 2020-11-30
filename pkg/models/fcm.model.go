@@ -4,15 +4,15 @@ type FCMKey struct {
 	Key string `json:"key"`
 }
 type FCM struct {
-	Notification NotificationSchema `json:"notification"`
-	To           string             `json:"to"`
-	Data         interface{}        `json:"data"`
+	Notification NotificationSchema     `json:"notification"`
+	To           string                 `json:"to"`
+	Data         map[string]interface{} `json:"data"`
 }
 
 type FCMRequest struct {
-	Title string            `json:"title"`
-	Body  string            `json:"body"`
-	Data  map[string]string `json:"data"`
+	Title string                 `json:"title"`
+	Body  string                 `json:"body"`
+	Data  map[string]interface{} `json:"data"`
 }
 
 type NotificationSchema struct {

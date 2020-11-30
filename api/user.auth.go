@@ -184,7 +184,7 @@ func (app *AppSchema) user_auth_login_visitor(c *gin.Context) {
 				app.sendNotifToAdmin(models.FCMRequest{
 					Title: "New Visitor",
 					Body:  "IP Address : " + visitor.IPAddress,
-					Data: map[string]string{
+					Data: map[string]interface{}{
 						"uid":  visitor.Uid,
 						"type": "NOTIFICATION_VISITOR",
 					},

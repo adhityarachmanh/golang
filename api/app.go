@@ -76,15 +76,15 @@ func (app *AppSchema) initializeRoutes() {
 
 }
 
-func (app *AppSchema) sendNotifToAdmin(fmcRequest models.FCMRequest) int {
+func (app *AppSchema) sendNotifToAdmin(fmcRequest models.FCMRequest) []int {
 	var adminList []models.Admin
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	app.firestoreByCollection("admins", &adminList)
-
+	var status []int
 	for i := 0; i < len(adminList); i++ {
 		fmcRequest.Data["notificationID"] = utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).String())
 		admin := adminList[i]
-		status := app.sendNotificationFCM(models.FCM{
+		stat := app.sendNotificationFCM(models.FCM{
 			Notification: models.NotificationSchema{
 				Title:       fmcRequest.Title,
 				Body:        fmcRequest.Body,
@@ -93,8 +93,9 @@ func (app *AppSchema) sendNotifToAdmin(fmcRequest models.FCMRequest) int {
 			Data: fmcRequest.Data,
 			To:   admin.NotificationToken,
 		})
-		return status
+		status = append(status, stat)
 	}
+	return status
 }
 
 func (app *AppSchema) BindRequestJSON(c *gin.Context, data interface{}) {

@@ -41,6 +41,7 @@ func (app *AppSchema) admin_user_banned(c *gin.Context) {
 					Path: "banned", Value: !visitor.Banned,
 				},
 			})
+			utils.ResponseAPI(c, models.ResponseSchema{Data: nil})
 		},
 		Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, "Something Wrong!")

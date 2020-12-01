@@ -45,7 +45,7 @@ func (app *AppSchema) user_auth_chat_active(c *gin.Context) {
 				CustomProperties: map[string]interface{}{},
 				User: models.ChatingUserSchema{
 					Color:          4294967295,
-					ContainerColor: 4279858655,
+					ContainerColor: 4284886155,
 					CustomProperties: models.CustomPropertiesSchema{
 						Read: false,
 					},

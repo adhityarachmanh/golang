@@ -39,7 +39,7 @@ func (app *AppSchema) loggingMiddleWare(c *gin.Context, description string) {
 	var logging models.Logging
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	logging.MacAddress, _ = utils.GetMacAddr()
-	logging.IPAddress, _ = utils.ExternalIP()
+	logging.IPAddress = c.ClientIP()
 	logging.Message = description
 	logging.URL = c.Request.RequestURI
 	logging.UserAgent = c.Request.UserAgent()

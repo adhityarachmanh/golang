@@ -12,14 +12,8 @@ import (
 func (app *AppSchema) admin_auth() {
 	app.routeRegister("POST", "admin/auth/login", app.admin_auth_login, false)
 	app.routeRegister("POST", "admin/auth/autologin", app.admin_auto_login, true)
-	app.routeRegister("POST", "test/aja", app.testAja, false)
-
 }
-func (app *AppSchema) testAja(c *gin.Context) {
-	origin := c.ClientIP()
-	utils.ResponseAPI(c, models.ResponseSchema{Data: map[string]string{"ip": origin}})
 
-}
 func (app *AppSchema) admin_auto_login(c *gin.Context) {
 	var adminRequest models.AdminRequest
 	var admin models.Admin

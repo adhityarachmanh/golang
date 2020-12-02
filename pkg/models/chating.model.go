@@ -6,8 +6,8 @@ type ChatingSchema struct {
 	CreatedAt        int                    `json:"createdAt" firestore:"createdAt"`
 	CustomProperties map[string]interface{} `json:"customProperties" firestore:"customProperties"`
 	User             ChatingUserSchema      `json:"user" firestore:"user"`
-	Image            string                 `json:"image" firestore:"image"`
-	Video            string                 `json:"video" firestore:"video"`
+	// Image            string                 `json:"image" firestore:"image"`
+	// Video            string                 `json:"video" firestore:"video"`
 }
 
 type ChatingUserSchema struct {

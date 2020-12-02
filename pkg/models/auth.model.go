@@ -14,6 +14,7 @@ type Visitor struct {
 	Chat      bool   `json:"chat" firestore:"chat"`
 	Token     string `json:"token" firestore:"token"`
 	IPAddress string `json:"ip_address" firestore:"ip_address"`
+	UserAgent string `json:"user_agent" firestore:"user_agent"`
 	TimeVisit string `json:"time_visit" firestore:"time_visit"`
 }
 type VisitorRequest struct {
@@ -22,6 +23,7 @@ type VisitorRequest struct {
 	Chat      bool   `json:"chat" firestore:"chat"`
 	Token     string `json:"token" firestore:"token"`
 	IPAddress string `json:"ip_address" firestore:"ip_address"`
+	UserAgent string `json:"user_agent" firestore:"user_agent"`
 	Banned    bool   `json:"banned" firestore:"banned"`
 }
 

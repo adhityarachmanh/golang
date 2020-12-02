@@ -16,7 +16,6 @@ func (app *AppSchema) user_auth() {
 	app.routeRegister("POST", "auth/updatevisitor", app.user_auth_edit_visitor, true)
 	app.routeRegister("POST", "auth/notif", app.user_auth_notif, true)
 	app.routeRegister("POST", "auth/chat/active", app.user_auth_chat_active, true)
-
 }
 
 func (app *AppSchema) user_auth_chat_active(c *gin.Context) {
@@ -45,7 +44,7 @@ func (app *AppSchema) user_auth_chat_active(c *gin.Context) {
 				CustomProperties: map[string]interface{}{},
 				User: models.ChatingUserSchema{
 					Color:          4294967295,
-					ContainerColor: 4279858655,
+					ContainerColor: 4284886155,
 					CustomProperties: models.CustomPropertiesSchema{
 						Read: false,
 					},
@@ -94,6 +93,9 @@ func (app *AppSchema) user_auth_edit_visitor(c *gin.Context) {
 				{
 					Path: "ip_address", Value: visitorRequest.IPAddress,
 				},
+				{
+					Path: "user_agent", Value: visitorRequest.UserAgent,
+				},
 			})
 
 			app.firestoreGetDocument("visitors", uid, &visitor)
@@ -126,25 +128,34 @@ func (app *AppSchema) user_auth_autologin_visitor(c *gin.Context) {
 					uid = visitorExist[0].Uid
 				} else {
 					visitor.Uid = uid
+					visitor.UserAgent = visitorRequest.UserAgent
 					visitor.IPAddress = visitorRequest.IPAddress
 					client.Collection("visitors").Doc(visitor.Uid).Set(ctx, visitor)
 				}
-			} else if visitor.Uid != "" && visitor.IPAddress != visitorRequest.IPAddress {
-				app.firestoreUpdate("visitors", uid, []firestore.Update{
-					{
-						Path: "ip_address", Value: visitorRequest.IPAddress,
-					},
-				})
-				app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: visitor.IPAddress}, &visitorBanned)
-				if len(visitorBanned) != 0 {
-					documentID := time.Now().In(loc).String()
-					client.Collection("banned").Doc(documentID).Set(ctx, models.BannedVisitor{
-						DocumentID: documentID,
-						Uid:        uid,
-						IPAddress:  visitorRequest.IPAddress,
+			} else if visitor.Uid != "" {
+				if visitor.IPAddress != visitorRequest.IPAddress {
+					app.firestoreUpdate("visitors", uid, []firestore.Update{
+						{
+							Path: "ip_address", Value: visitorRequest.IPAddress,
+						},
+					})
+					app.firestoreFilter("banned", Filter{Key: "ip_address", Op: "==", Value: visitor.IPAddress}, &visitorBanned)
+					if len(visitorBanned) != 0 {
+						documentID := utils.UUID()
+						client.Collection("banned").Doc(documentID).Set(ctx, models.BannedVisitor{
+							DocumentID: documentID,
+							Uid:        uid,
+							IPAddress:  visitorRequest.IPAddress,
+						})
+					}
+				}
+				if visitor.UserAgent != visitorRequest.UserAgent {
+					app.firestoreUpdate("visitors", uid, []firestore.Update{
+						{
+							Path: "user_agent", Value: visitorRequest.UserAgent,
+						},
 					})
 				}
-
 				app.firestoreUpdate("visitors", uid, []firestore.Update{
 					{
 						Path: "time_visit", Value: time.Now().In(loc).Format(time.RFC3339),
@@ -178,6 +189,7 @@ func (app *AppSchema) user_auth_login_visitor(c *gin.Context) {
 			} else {
 				visitor.Uid = uid
 				visitor.IPAddress = visitorRequest.IPAddress
+				visitor.UserAgent = visitorRequest.UserAgent
 				visitor.TimeVisit = time.Now().In(loc).Format(time.RFC3339)
 				client.Collection("visitors").Doc(uid).Set(ctx, visitor)
 				app.firestoreGetDocument("visitors", uid, &visitor)

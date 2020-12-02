@@ -73,6 +73,20 @@ func (app *AppSchema) initializeRoutes() {
 	app.user_music()
 	app.user_project()
 	app.user_contact()
+	app.routeRegister("POST", "visitor/information", app.visitorIP, false)
+}
+
+func (app *AppSchema) visitorIP(c *gin.Context) {
+	utils.Block{
+		Try: func() {
+			ipAdress := c.ClientIP()
+			userAgent := c.Request.UserAgent()
+			utils.ResponseAPI(c, models.ResponseSchema{Data: map[string]string{"ip": ipAdress, "userAgent": userAgent}})
+		},
+		Catch: func(e utils.Exception) {
+			utils.ResponseAPIError(c, "Something Wrong!")
+		},
+	}.Go()
 
 }
 

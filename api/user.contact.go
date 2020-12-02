@@ -16,21 +16,10 @@ func (app *AppSchema) user_contact() {
 }
 
 func (app *AppSchema) getContact(c *gin.Context) {
-	var data []models.ContactSchema
-	var d models.ContactSchema
+	var data models.InformationSchema
 	utils.Block{
 		Try: func() {
-			client, _ := app.Firebase.Firestore(ctx)
-			result := client.Collection("contact").Documents(ctx)
-			for {
-				doc, err := result.Next()
-				if err != nil {
-					break
-				}
-				doc.DataTo(&d)
-				data = append(data, d)
-			}
-			defer client.Close()
+			app.firestoreGetDocument("config", "information", &data)
 			utils.ResponseAPI(c, models.ResponseSchema{Data: data})
 		},
 		Catch: func(e utils.Exception) {

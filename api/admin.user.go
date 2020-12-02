@@ -7,7 +7,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"github.com/gin-gonic/gin"
 	// "io/ioutil"
-	"time"
+	// "time"
 	// "fmt"
 )
 
@@ -20,11 +20,10 @@ func (app *AppSchema) admin_user_banned(c *gin.Context) {
 	var visitorBanned []models.BannedVisitor
 	utils.Block{
 		Try: func() {
-			loc, _ := time.LoadLocation("Asia/Jakarta")
 			client, _ := app.Firebase.Firestore(ctx)
 			app.BindRequestJSON(c, &visitor)
 			if !visitor.Banned {
-				documentID := utils.Ed.BNE(6, 2).Enc(time.Now().In(loc).String())
+				documentID := utils.UUID()
 				client.Collection("banned").Doc(documentID).Set(ctx, models.BannedVisitor{
 					DocumentID: documentID,
 					Uid:        visitor.Uid,
@@ -42,6 +41,7 @@ func (app *AppSchema) admin_user_banned(c *gin.Context) {
 					Path: "banned", Value: !visitor.Banned,
 				},
 			})
+			utils.ResponseAPI(c, models.ResponseSchema{Data: nil})
 		},
 		Catch: func(e utils.Exception) {
 			utils.ResponseAPIError(c, "Something Wrong!")

@@ -16,7 +16,6 @@ func (app *AppSchema) user_auth() {
 	app.routeRegister("POST", "auth/updatevisitor", app.user_auth_edit_visitor, true)
 	app.routeRegister("POST", "auth/notif", app.user_auth_notif, true)
 	app.routeRegister("POST", "auth/chat/active", app.user_auth_chat_active, true)
-
 }
 
 func (app *AppSchema) user_auth_chat_active(c *gin.Context) {

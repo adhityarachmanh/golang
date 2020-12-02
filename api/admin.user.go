@@ -28,6 +28,7 @@ func (app *AppSchema) admin_user_banned(c *gin.Context) {
 					DocumentID: documentID,
 					Uid:        visitor.Uid,
 					IPAddress:  visitor.IPAddress,
+					UserAgent:  visitor.UserAgent,
 				})
 			} else {
 				app.firestoreFilter("banned", Filter{Key: "uid", Op: "==", Value: visitor.Uid}, &visitorBanned)

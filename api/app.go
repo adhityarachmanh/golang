@@ -72,7 +72,6 @@ func (app *AppSchema) initializeRoutes() {
 	app.user_auth()
 	app.user_music()
 	app.user_project()
-	app.user_contact()
 	app.routeRegister("POST", "visitor/information", app.visitorIP, false)
 }
 

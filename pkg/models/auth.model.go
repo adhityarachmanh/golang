@@ -6,6 +6,7 @@ type BannedVisitor struct {
 	DocumentID string `json:"document_id" firestore:"document_id"`
 	Uid        string `json:"uid" firestore:"uid"`
 	IPAddress  string `json:"ip_address" firestore:"ip_address"`
+	UserAgent  string `json:"user_agent" firestore:"user_agent"`
 }
 
 type Visitor struct {
@@ -49,5 +50,6 @@ type Admin struct {
 	Password          string `json:"password" firestore:"password"`
 	Token             string `json:"token" firestore:"token"`
 	Image             string `json:"image" firestore:"image"`
+	Pin               int64  `json:"pin" firestore:"pin"`
 	NotificationToken string `json:"notificationToken" firestore:"notificationToken"`
 }

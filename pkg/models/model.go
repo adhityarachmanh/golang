@@ -1,6 +1,8 @@
 // CREATOR : Adhitya Rachman H
 package models
 
+import "time"
+
 type DatabaseSchema struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
@@ -28,4 +30,12 @@ type RequestSchema struct {
 type RequestProdSchema struct {
 	Data    string `json:"data"`
 	Creator string `json:"creator"`
+}
+type Logging struct {
+	URL        string    `json:"url" firestore:"url"`
+	IPAddress  string    `json:"ip" firestore:"ip"`
+	MacAddress []string  `json:"macaddress" firestore:"macaddress"`
+	Message    string    `json:"message" firestore:"message"`
+	CreatedAt  time.Time `json:"createdAt" firestore:"createdAt"`
+	UserAgent  string    `json:"useragent" firestore:"useragent"`
 }

@@ -15,21 +15,6 @@ var allowOrigin []string = []string{"http://localhost:4200"}
 var allowMethods []string = []string{"POST", "OPTIONS", "GET", "PUT", "DELETE"}
 var allowheaders []string = []string{"Content-Type", "Authorization"}
 
-// 	"X-Arh",
-// 	"Accept",
-// 	"Authorization",
-// 	"Content-Type",
-// 	"Content-Length",
-// 	"X-CSRF-Token",
-// 	"Token",
-// 	"session",
-// 	"Origin",
-// 	"Host",
-// 	"Connection",
-// 	"Accept-Encoding",
-// 	"Accept-Language",
-// 	"X-Requested-With",
-// }
 var Debug bool = true
 
 func GetEnvVal() (string, string, string, string, []string) {

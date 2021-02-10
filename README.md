@@ -12,6 +12,6 @@ ExecStart=/home/arh/go/src/github.com/adhityarachmanh/go-api-arh/app
 [Install]
 WantedBy=multi-user.target
 
-{"db":"cv","uri":"mongodb+srv://arh:rumah10310@arh.xzzch.mongodb.net"}
+{"db":"cv","uri":""}
 {"db":"cv","uri":"mongodb://localhost:27017"}
 
